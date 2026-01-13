@@ -28,8 +28,8 @@ const AdminLogin = () => {
             localStorage.setItem("userInfo", JSON.stringify(data));
             toast.success("Login successful");
             navigate("/admin/dashboard");
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "Invalid credentials");
+        } catch (error: unknown) {
+            toast.error(error instanceof Error && 'response' in error ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Invalid credentials" : "Invalid credentials");
         } finally {
             setLoading(false);
         }

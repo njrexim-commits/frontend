@@ -4,7 +4,6 @@ import HeroSection from "@/components/home/HeroSection";
 import AboutSection from "@/components/home/AboutSection";
 import ProductsSection from "@/components/home/ProductsSection";
 import FeaturesSection from "@/components/home/FeaturesSection";
-import StatsSection from "@/components/home/StatsSection";
 import WhyUsSection from "@/components/home/WhyUsSection";
 import VideoBanner from "@/components/home/VideoBanner";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
@@ -14,7 +13,10 @@ import api from "@/lib/api";
 import Loader from "@/components/ui/Loader";
 
 const Index = () => {
-  const [content, setContent] = useState<any>(null);
+  const [content, setContent] = useState<{
+    hero?: { title: string; highlightedText: string; description: string; buttonText: string; buttonLink: string; slides?: Array<{ id: number; image: string; alt: string }> };
+    aboutSection?: { badge: string; title: string; description: string; stats: { label: string; value: string; }[] };
+  } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -44,7 +46,6 @@ const Index = () => {
       <AboutSection content={content?.aboutSection} />
       <ProductsSection />
       <FeaturesSection />
-      <StatsSection />
       <WhyUsSection />
       <VideoBanner />
       <TestimonialsSection />

@@ -22,8 +22,8 @@ const Setup = () => {
             localStorage.setItem("userInfo", JSON.stringify(data));
             toast.success("Super Admin created successfully!");
             navigate("/admin/dashboard");
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "Setup failed. Maybe it's already done?");
+        } catch (error: unknown) {
+            toast.error(error instanceof Error && 'response' in error ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Setup failed. Maybe it's already done?" : "Setup failed. Maybe it's already done?");
         } finally {
             setLoading(false);
         }

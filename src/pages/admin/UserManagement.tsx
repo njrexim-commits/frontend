@@ -102,8 +102,8 @@ const UserManagement = () => {
                 await api.delete(`/auth/users/${id}`);
                 toast.success("User account removed");
                 fetchUsers();
-            } catch (error: any) {
-                toast.error(error.response?.data?.message || "Failed to delete user");
+            } catch (error: unknown) {
+                toast.error(error instanceof Error && 'response' in error ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Failed to delete user" : "Failed to delete user");
             }
         }
     };

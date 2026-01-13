@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import api from "@/lib/api";
 import Loader from "@/components/ui/Loader";
 
-const iconMap: { [key: string]: any } = {
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Target,
   Eye,
   Award,
@@ -14,7 +14,11 @@ const iconMap: { [key: string]: any } = {
 };
 
 const About = () => {
-  const [content, setContent] = useState<any>(null);
+  const [content, setContent] = useState<{
+    hero?: { badge: string; title: string; description: string };
+    values?: Array<{ icon: string; title: string; description: string }>;
+    story?: { badge: string; title: string; content: string[]; image: string; statValue: string; statLabel: string };
+  } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -77,7 +81,7 @@ const About = () => {
 
   if (loading && !content) return <Loader />;
 
-  const pageValues = content?.values?.map((v: any) => ({
+  const pageValues = content?.values?.map((v) => ({
     ...v,
     icon: iconMap[v.icon] || Target
   })) || defaultValues;
@@ -171,7 +175,7 @@ const About = () => {
                   <TrendingUp className="w-12 h-12 mx-auto mb-3" />
                   <span className="block text-3xl font-bold">{story.statValue}</span>
                   <span className="text-sm uppercase tracking-wider opacity-90">
-                    {story.statLabel.split(' ').map((word: string, i: number) => (
+                    {story.statLabel.split(' ').map((word, i) => (
                       <span key={i}>{word}{i === 0 && <br />}</span>
                     ))}
                   </span>

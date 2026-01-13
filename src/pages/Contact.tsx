@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import api from "@/lib/api";
 import Loader from "@/components/ui/Loader";
 
-const iconMap: { [key: string]: any } = {
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   MapPin,
   Phone,
   Mail,
@@ -24,7 +24,10 @@ const iconMap: { [key: string]: any } = {
 };
 
 const Contact = () => {
-  const [content, setContent] = useState<any>(null);
+  const [content, setContent] = useState<{
+    hero?: { badge: string; title: string; description: string };
+    info?: { address: string[]; phones: string[]; emails: string[]; workingHours: string[] };
+  } | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);

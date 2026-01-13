@@ -38,7 +38,7 @@ interface HeroSectionProps {
     description: string;
     buttonText: string;
     buttonLink: string;
-    slides: Array<{ id: number; image: string; alt: string }>;
+    slides?: Array<{ id: number; image: string; alt: string }>;
   };
 }
 
@@ -84,11 +84,11 @@ const HeroSection = ({ content }: HeroSectionProps) => {
 
   const nextSlide = useCallback(() => {
     goToSlide((currentSlide + 1) % slides.length);
-  }, [currentSlide, goToSlide]);
+  }, [currentSlide, goToSlide, slides.length]);
 
   const prevSlide = useCallback(() => {
     goToSlide((currentSlide - 1 + slides.length) % slides.length);
-  }, [currentSlide, goToSlide]);
+  }, [currentSlide, goToSlide, slides.length]);
 
   useEffect(() => {
     const interval = setInterval(nextSlide, 5000);

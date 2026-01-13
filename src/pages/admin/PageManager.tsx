@@ -27,7 +27,7 @@ interface Page {
     _id: string;
     title: string;
     slug: string;
-    content: any;
+    content: Record<string, unknown>;
     isActive: boolean;
 }
 
@@ -36,7 +36,7 @@ const PageManager = () => {
     const [loading, setLoading] = useState(true);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [editingPage, setEditingPage] = useState<Page | null>(null);
-    const [pageContent, setPageContent] = useState<any>(null);
+    const [pageContent, setPageContent] = useState<Record<string, unknown> | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
 
     const fetchPages = async () => {
@@ -61,12 +61,15 @@ const PageManager = () => {
         setIsDialogOpen(true);
     };
 
-    const handleUpdateContent = (path: string, value: any) => {
-        const newContent = { ...pageContent };
+    const handleUpdateContent = (path: string, value: unknown) => {
+        const newContent = { ...pageContent } as Record<string, unknown>;
         const keys = path.split('.');
-        let current = newContent;
+        let current: Record<string, unknown> = newContent;
         for (let i = 0; i < keys.length - 1; i++) {
-            current = current[keys[i]];
+            const next = current[keys[i]];
+            if (typeof next === 'object' && next !== null && !Array.isArray(next)) {
+                current = next as Record<string, unknown>;
+            }
         }
         current[keys[keys.length - 1]] = value;
         setPageContent(newContent);
@@ -86,7 +89,7 @@ const PageManager = () => {
         }
     };
 
-    const renderEditorFields = (obj: any, prefix = "") => {
+    const renderEditorFields = (obj: Record<string, unknown>, prefix = "") => {
         return Object.keys(obj).map((key) => {
             const fullPath = prefix ? `${prefix}.${key}` : key;
             const value = obj[key];
@@ -95,7 +98,7 @@ const PageManager = () => {
                 return (
                     <div key={fullPath} className="space-y-4 border-l-2 border-slate-100 pl-4 py-2">
                         <h4 className="text-sm font-bold uppercase tracking-wider text-indigo-600">{key}</h4>
-                        {renderEditorFields(value, fullPath)}
+                        {renderEditorFields(value as Record<string, unknown>, fullPath)}
                     </div>
                 );
             }
@@ -109,9 +112,9 @@ const PageManager = () => {
                                 <div className="flex justify-between items-center">
                                     <span className="text-xs font-bold text-slate-400">Item #{index + 1}</span>
                                 </div>
-                                {typeof item === "object" ? renderEditorFields(item, `${fullPath}.${index}`) : (
+                                {typeof item === "object" ? renderEditorFields(item as Record<string, unknown>, `${fullPath}.${index}`) : (
                                     <Input
-                                        value={item}
+                                        value={String(item)}
                                         onChange={(e) => handleUpdateContent(`${fullPath}.${index}`, e.target.value)}
                                     />
                                 )}
@@ -121,20 +124,21 @@ const PageManager = () => {
                 );
             }
 
+            const stringValue = String(value);
             return (
                 <div key={fullPath} className="space-y-1.5">
                     <Label className="text-xs font-semibold text-slate-500 capitalize">
                         {key.replace(/([A-Z])/g, ' $1')}
                     </Label>
-                    {value.length > 100 || key.toLowerCase().includes('content') || key.toLowerCase().includes('description') ? (
+                    {stringValue.length > 100 || key.toLowerCase().includes('content') || key.toLowerCase().includes('description') ? (
                         <Textarea
-                            value={value}
+                            value={stringValue}
                             onChange={(e) => handleUpdateContent(fullPath, e.target.value)}
                             className="text-sm border-slate-200 focus:ring-indigo-500/20 min-h-[80px]"
                         />
                     ) : (
                         <Input
-                            value={value}
+                            value={stringValue}
                             onChange={(e) => handleUpdateContent(fullPath, e.target.value)}
                             className="text-sm border-slate-200 focus:ring-indigo-500/20"
                         />
