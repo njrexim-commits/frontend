@@ -1,7 +1,23 @@
 import { Link } from "react-router-dom";
 import { Globe, Phone, Mail, MapPin, ArrowUp, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import { useState, useEffect } from "react";
+import api from "@/lib/api";
 
 const Footer = () => {
+  const [settings, setSettings] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const { data } = await api.get("/settings");
+        setSettings(data);
+      } catch (error) {
+        console.error("Failed to fetch settings", error);
+      }
+    };
+    fetchSettings();
+  }, []);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -25,10 +41,10 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { icon: Facebook, href: "#", label: "Facebook" },
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
-    { icon: Instagram, href: "#", label: "Instagram" },
+    { icon: Facebook, href: settings?.socialMedia?.facebook || "#", label: "Facebook" },
+    { icon: Twitter, href: settings?.socialMedia?.twitter || "#", label: "Twitter" },
+    { icon: Linkedin, href: settings?.socialMedia?.linkedin || "#", label: "LinkedIn" },
+    { icon: Instagram, href: settings?.socialMedia?.instagram || "#", label: "Instagram" },
   ];
 
   return (
@@ -48,7 +64,7 @@ const Footer = () => {
               </div>
             </Link>
             <p className="text-white/70 text-sm leading-relaxed">
-              Your trusted partner in global trade. Delivering quality agricultural 
+              Your trusted partner in global trade. Delivering quality agricultural
               and food products to international markets with excellence and reliability.
             </p>
             <div className="flex gap-4">
@@ -108,9 +124,9 @@ const Footer = () => {
                   <MapPin className="w-5 h-5 text-primary" />
                 </div>
                 <div className="text-white/70 text-sm">
-                  123 Export Zone, Industrial Area,
+                  {settings?.address || "123 Export Zone, Industrial Area,"}
                   <br />
-                  Mumbai, Maharashtra 400001, India
+                  {settings?.city || "Mumbai"}, {settings?.state || "Maharashtra"} {settings?.pincode || "400001"}, {settings?.country || "India"}
                 </div>
               </li>
               <li className="flex items-center gap-3">
@@ -118,10 +134,10 @@ const Footer = () => {
                   <Phone className="w-5 h-5 text-primary" />
                 </div>
                 <a
-                  href="tel:+911234567890"
+                  href={`tel:${settings?.phone || "+911234567890"}`}
                   className="text-white/70 hover:text-golden transition-colors"
                 >
-                  +91 123 456 7890
+                  {settings?.phone || "+91 123 456 7890"}
                 </a>
               </li>
               <li className="flex items-center gap-3">
@@ -129,10 +145,10 @@ const Footer = () => {
                   <Mail className="w-5 h-5 text-primary" />
                 </div>
                 <a
-                  href="mailto:info@njrexim.com"
+                  href={`mailto:${settings?.email || "info@njrexim.com"}`}
                   className="text-white/70 hover:text-golden transition-colors"
                 >
-                  info@njrexim.com
+                  {settings?.email || "info@njrexim.com"}
                 </a>
               </li>
             </ul>

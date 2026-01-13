@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "@/components/layout/Layout";
 import SEO from "@/components/SEO";
 import { Calendar, Clock, ArrowRight, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
+import api from "@/lib/api";
+import Loader from "@/components/ui/Loader";
 
 interface BlogPost {
   id: string;
@@ -19,8 +21,10 @@ interface BlogPost {
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const blogPosts: BlogPost[] = [
+  const defaultBlogPosts: BlogPost[] = [
     {
       id: "1",
       title: "The Global Demand for Indian Basmati Rice: Trends and Insights",
@@ -51,67 +55,38 @@ const Blog = () => {
       readTime: "6 min read",
       author: "Compliance Team",
     },
-    {
-      id: "4",
-      title: "The Journey of Alphonso Mangoes: From Farm to International Markets",
-      excerpt: "Discover how we handle the delicate process of exporting the king of mangoes to customers worldwide.",
-      image: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=800&q=80",
-      category: "Products",
-      date: "2024-11-28",
-      readTime: "4 min read",
-      author: "NJR Exim Team",
-    },
-    {
-      id: "5",
-      title: "Sustainable Sourcing: Our Commitment to Ethical Trade",
-      excerpt: "How we work with local farmers and suppliers to ensure sustainable and ethical sourcing practices.",
-      image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=800&q=80",
-      category: "Sustainability",
-      date: "2024-11-20",
-      readTime: "5 min read",
-      author: "Sourcing Team",
-    },
-    {
-      id: "6",
-      title: "Spices Export: Meeting Global Demand for Indian Flavors",
-      excerpt: "The rising popularity of Indian spices in international cuisines and how we meet this growing demand.",
-      image: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800&q=80",
-      category: "Products",
-      date: "2024-11-15",
-      readTime: "6 min read",
-      author: "Product Team",
-    },
-    {
-      id: "7",
-      title: "Packaging Innovations in Agricultural Exports",
-      excerpt: "Exploring modern packaging solutions that extend shelf life and maintain product quality during international shipping.",
-      image: "https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=800&q=80",
-      category: "Logistics",
-      date: "2024-11-08",
-      readTime: "5 min read",
-      author: "Operations Team",
-    },
-    {
-      id: "8",
-      title: "Navigating Export Documentation: A Complete Guide",
-      excerpt: "Understanding the essential documents required for smooth international trade operations and customs clearance.",
-      image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80",
-      category: "Compliance",
-      date: "2024-11-01",
-      readTime: "8 min read",
-      author: "Documentation Team",
-    },
-    {
-      id: "9",
-      title: "The Rise of Fox Nuts (Makhana) in Health-Conscious Markets",
-      excerpt: "How this traditional Indian superfood is gaining popularity in international health food markets.",
-      image: "https://static.investindia.gov.in/s3fs-public/2025-02/makhana-banner-1200x400.jpg",
-      category: "Market Trends",
-      date: "2024-10-25",
-      readTime: "4 min read",
-      author: "Market Analysis",
-    },
   ];
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const { data } = await api.get("/blogs");
+        if (data && data.length > 0) {
+          const formattedBlogs = data.map((blog: any) => ({
+            id: blog._id,
+            title: blog.title,
+            excerpt: blog.excerpt || blog.content?.substring(0, 150) + "...",
+            image: blog.image || defaultBlogPosts[0].image,
+            category: blog.category || "Uncategorized",
+            date: blog.createdAt || blog.date,
+            readTime: `${Math.ceil((blog.content?.length || 500) / 200)} min read`,
+            author: blog.author || "NJR Exim Team",
+          }));
+          setBlogPosts(formattedBlogs);
+        } else {
+          setBlogPosts(defaultBlogPosts);
+        }
+      } catch (error) {
+        console.error("Failed to fetch blogs", error);
+        setBlogPosts(defaultBlogPosts);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBlogs();
+  }, []);
+
+  if (loading) return <Loader />;
 
   const categories = ["All", ...Array.from(new Set(blogPosts.map(post => post.category)))];
 
@@ -211,8 +186,8 @@ const Blog = () => {
                 key={category}
                 onClick={() => setSelectedCategory(category)}
                 className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${selectedCategory === category
-                    ? "bg-primary text-primary-foreground shadow-lg scale-105"
-                    : "bg-background text-muted-foreground hover:bg-background/80"
+                  ? "bg-primary text-primary-foreground shadow-lg scale-105"
+                  : "bg-background text-muted-foreground hover:bg-background/80"
                   }`}
               >
                 {category}

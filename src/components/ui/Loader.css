@@ -4,8 +4,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 200px;
-    width: 100%;
+    min-height: 100vh;
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
 }
 
 .loader {
@@ -25,7 +32,7 @@
 }
 
 .square {
-    background: hsl(var(--primary));
+    background: #FFBF00;
     width: 10px;
     height: 10px;
     position: absolute;

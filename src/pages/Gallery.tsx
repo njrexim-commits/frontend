@@ -1,13 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "@/components/layout/Layout";
 import SEO from "@/components/SEO";
 import { X } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import api from "@/lib/api";
+import Loader from "@/components/ui/Loader";
 
 const Gallery = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [galleryImages, setGalleryImages] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const galleryImages = [
+  const defaultGalleryImages = [
     {
       id: 1,
       url: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=800&q=80",
@@ -44,79 +48,34 @@ const Gallery = () => {
       title: "Fresh Red Onions",
       category: "Products",
     },
-    {
-      id: 7,
-      url: "https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?w=800&q=80",
-      title: "Quality Inspection",
-      category: "Quality Control",
-    },
-    {
-      id: 8,
-      url: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&q=80",
-      title: "Fresh Vegetables",
-      category: "Products",
-    },
-    {
-      id: 9,
-      url: "https://images.unsplash.com/photo-1509358271058-acd22cc93898?w=800&q=80",
-      title: "Premium Cashew Nuts",
-      category: "Products",
-    },
-    {
-      id: 10,
-      url: "https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=800&q=80",
-      title: "Export Documentation",
-      category: "Operations",
-    },
-    {
-      id: 11,
-      url: "https://images.unsplash.com/photo-1563746098251-d35aef196e83?w=800&q=80",
-      title: "Frozen Green Peas",
-      category: "Products",
-    },
-    {
-      id: 12,
-      url: "https://tiimg.tistatic.com/fp/1/009/018/fox-nuts-691.jpg",
-      title: "Fox Nuts (Makhana)",
-      category: "Products",
-    },
-    {
-      id: 13,
-      url: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&q=80",
-      title: "Team Meeting",
-      category: "Team",
-    },
-    {
-      id: 14,
-      url: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&q=80",
-      title: "Wheat Flour Production",
-      category: "Products",
-    },
-    {
-      id: 15,
-      url: "https://images.unsplash.com/photo-1518110925495-5fe2fda0442c?w=800&q=80",
-      title: "Rock Salt",
-      category: "Products",
-    },
-    {
-      id: 16,
-      url: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800&q=80",
-      title: "Fresh Bananas",
-      category: "Products",
-    },
-    {
-      id: 17,
-      url: "https://images.unsplash.com/photo-1615485500704-8e990f9900f7?w=800&q=80",
-      title: "Turmeric Powder",
-      category: "Products",
-    },
-    {
-      id: 18,
-      url: "https://images.unsplash.com/photo-1583119022894-919a68a3d0e3?w=800&q=80",
-      title: "Red Chilli",
-      category: "Products",
-    },
   ];
+
+  useEffect(() => {
+    const fetchGallery = async () => {
+      try {
+        const { data } = await api.get("/gallery");
+        if (data && data.length > 0) {
+          const formattedImages = data.map((item: any) => ({
+            id: item._id,
+            url: item.image || item.url,
+            title: item.title || "Gallery Image",
+            category: item.category || "General",
+          }));
+          setGalleryImages(formattedImages);
+        } else {
+          setGalleryImages(defaultGalleryImages);
+        }
+      } catch (error) {
+        console.error("Failed to fetch gallery", error);
+        setGalleryImages(defaultGalleryImages);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchGallery();
+  }, []);
+
+  if (loading) return <Loader />;
 
   const categories = ["All", ...Array.from(new Set(galleryImages.map(img => img.category)))];
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -159,8 +118,8 @@ const Gallery = () => {
                 key={category}
                 onClick={() => setSelectedCategory(category)}
                 className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${selectedCategory === category
-                    ? "bg-primary text-primary-foreground shadow-lg scale-105"
-                    : "bg-muted text-muted-foreground hover:bg-muted/80"
+                  ? "bg-primary text-primary-foreground shadow-lg scale-105"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
                   }`}
               >
                 {category}

@@ -1,85 +1,126 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "@/components/layout/Layout";
 import SEO from "@/components/SEO";
 import { Link } from "react-router-dom";
 import { ArrowRight, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-
-const productCategories = [
-  {
-    name: "Onion",
-    slug: "onion",
-    image: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=600&q=80",
-    description: "Premium quality red and white onions with extended shelf life",
-    products: ["Red Onion", "White Onion", "Shallots"],
-  },
-  {
-    name: "Fruits",
-    slug: "fruits",
-    image: "https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=600&q=80",
-    description: "Fresh tropical and seasonal fruits for international markets",
-    products: ["Alphonso Mango", "Banana", "Pomegranate", "Grapes"],
-  },
-  {
-    name: "Vegetables",
-    slug: "vegetables",
-    image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&q=80",
-    description: "Farm-fresh vegetables meeting international quality standards",
-    products: ["Potato", "Tomato", "Cucumber", "Cauliflower"],
-  },
-  {
-    name: "Spices",
-    slug: "spices",
-    image: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=600&q=80",
-    description: "Aromatic spices with high curcumin and essential oil content",
-    products: ["Turmeric", "Red Chilli", "Cumin", "Coriander"],
-  },
-  {
-    name: "Frozen Items",
-    slug: "frozen-items",
-    image: "https://images.unsplash.com/photo-1563746098251-d35aef196e83?w=600&q=80",
-    description: "IQF frozen vegetables and fruits maintaining nutritional value",
-    products: ["Frozen Peas", "Frozen Corn", "Frozen Mixed Vegetables"],
-  },
-  {
-    name: "Confectionery",
-    slug: "confectionery",
-    image: "https://images.unsplash.com/photo-1509358271058-acd22cc93898?w=600&q=80",
-    description: "Premium nuts and confectionery items for global markets",
-    products: ["Cashew Nuts", "Almonds", "Pistachios", "Raisins"],
-  },
-  {
-    name: "Rice",
-    slug: "rice",
-    image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&q=80",
-    description: "Aromatic basmati and non-basmati rice varieties",
-    products: ["1121 Basmati", "Traditional Basmati", "Sona Masoori"],
-  },
-  {
-    name: "Flour",
-    slug: "flour",
-    image: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&q=80",
-    description: "Fine quality wheat and grain flours for various applications",
-    products: ["Wheat Flour", "Rice Flour", "Gram Flour"],
-  },
-  {
-    name: "Salt",
-    slug: "salt",
-    image: "https://images.unsplash.com/photo-1518110925495-5fe2fda0442c?w=600&q=80",
-    description: "Natural rock and sea salt for food and industrial use",
-    products: ["Rock Salt", "Sea Salt", "Iodized Salt"],
-  },
-  {
-    name: "Makhana / Fox Nuts",
-    slug: "makhana",
-    image: "https://images.unsplash.com/photo-1627735483792-67d21edb3b4e?w=600&q=80",
-    description: "Premium quality superfood fox nuts rich in nutrients",
-    products: ["Premium Grade", "Standard Grade", "Flavored Makhana"],
-  },
-];
+import api from "@/lib/api";
+import Loader from "@/components/ui/Loader";
 
 const Products = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [productCategories, setProductCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Default fallback data
+  const defaultCategories = [
+    {
+      name: "Onion",
+      slug: "onion",
+      image: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=600&q=80",
+      description: "Premium quality red and white onions with extended shelf life",
+      products: ["Red Onion", "White Onion", "Shallots"],
+    },
+    {
+      name: "Fruits",
+      slug: "fruits",
+      image: "https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=600&q=80",
+      description: "Fresh tropical and seasonal fruits for international markets",
+      products: ["Alphonso Mango", "Banana", "Pomegranate", "Grapes"],
+    },
+    {
+      name: "Vegetables",
+      slug: "vegetables",
+      image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&q=80",
+      description: "Farm-fresh vegetables meeting international quality standards",
+      products: ["Potato", "Tomato", "Cucumber", "Cauliflower"],
+    },
+    {
+      name: "Spices",
+      slug: "spices",
+      image: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=600&q=80",
+      description: "Aromatic spices with high curcumin and essential oil content",
+      products: ["Turmeric", "Red Chilli", "Cumin", "Coriander"],
+    },
+    {
+      name: "Frozen Items",
+      slug: "frozen-items",
+      image: "https://images.unsplash.com/photo-1563746098251-d35aef196e83?w=600&q=80",
+      description: "IQF frozen vegetables and fruits maintaining nutritional value",
+      products: ["Frozen Peas", "Frozen Corn", "Frozen Mixed Vegetables"],
+    },
+    {
+      name: "Confectionery",
+      slug: "confectionery",
+      image: "https://images.unsplash.com/photo-1509358271058-acd22cc93898?w=600&q=80",
+      description: "Premium nuts and confectionery items for global markets",
+      products: ["Cashew Nuts", "Almonds", "Pistachios", "Raisins"],
+    },
+    {
+      name: "Rice",
+      slug: "rice",
+      image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&q=80",
+      description: "Aromatic basmati and non-basmati rice varieties",
+      products: ["1121 Basmati", "Traditional Basmati", "Sona Masoori"],
+    },
+    {
+      name: "Flour",
+      slug: "flour",
+      image: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&q=80",
+      description: "Fine quality wheat and grain flours for various applications",
+      products: ["Wheat Flour", "Rice Flour", "Gram Flour"],
+    },
+    {
+      name: "Salt",
+      slug: "salt",
+      image: "https://images.unsplash.com/photo-1518110925495-5fe2fda0442c?w=600&q=80",
+      description: "Natural rock and sea salt for food and industrial use",
+      products: ["Rock Salt", "Sea Salt", "Iodized Salt"],
+    },
+    {
+      name: "Makhana / Fox Nuts",
+      slug: "makhana",
+      image: "https://images.unsplash.com/photo-1627735483792-67d21edb3b4e?w=600&q=80",
+      description: "Premium quality superfood fox nuts rich in nutrients",
+      products: ["Premium Grade", "Standard Grade", "Flavored Makhana"],
+    },
+  ];
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const { data } = await api.get("/products");
+        if (data && data.length > 0) {
+          // Group products by category
+          const categoriesMap = new Map();
+          data.forEach((product: any) => {
+            const category = product.category || "Other";
+            if (!categoriesMap.has(category)) {
+              categoriesMap.set(category, {
+                name: category,
+                slug: category.toLowerCase().replace(/\s+/g, '-'),
+                image: product.image || defaultCategories[0].image,
+                description: product.description || `Premium quality ${category.toLowerCase()}`,
+                products: [],
+              });
+            }
+            categoriesMap.get(category).products.push(product.name);
+          });
+          setProductCategories(Array.from(categoriesMap.values()));
+        } else {
+          setProductCategories(defaultCategories);
+        }
+      } catch (error) {
+        console.error("Failed to fetch products", error);
+        setProductCategories(defaultCategories);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  if (loading) return <Loader />;
 
   const filteredCategories = productCategories.filter(
     (category) =>

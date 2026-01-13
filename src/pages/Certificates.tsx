@@ -1,9 +1,15 @@
+import { useState, useEffect } from "react";
 import Layout from "@/components/layout/Layout";
 import SEO from "@/components/SEO";
 import { Award, CheckCircle, FileCheck, Globe, Shield } from "lucide-react";
+import api from "@/lib/api";
+import Loader from "@/components/ui/Loader";
 
 const Certificates = () => {
-  const certifications = [
+  const [certifications, setCertifications] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const defaultCertifications = [
     {
       icon: Award,
       title: "FSSAI Certified",
@@ -47,6 +53,35 @@ const Certificates = () => {
       validUntil: "Valid until: June 2026",
     },
   ];
+
+  useEffect(() => {
+    const fetchCertificates = async () => {
+      try {
+        const { data } = await api.get("/certificates");
+        if (data && data.length > 0) {
+          const formattedCerts = data.map((cert: any) => ({
+            icon: Award, // Default icon, can be customized based on cert type
+            title: cert.title || cert.name,
+            description: cert.description,
+            number: cert.number || cert.certificateNumber,
+            validUntil: cert.validUntil || cert.validity,
+          }));
+          setCertifications(formattedCerts);
+        } else {
+          setCertifications(defaultCertifications);
+        }
+      } catch (error) {
+        console.error("Failed to fetch certificates", error);
+        setCertifications(defaultCertifications);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCertificates();
+  }, []);
+
+  if (loading) return <Loader />;
+
 
   const qualityStandards = [
     {

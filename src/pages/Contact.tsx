@@ -28,22 +28,27 @@ const Contact = () => {
     hero?: { badge: string; title: string; description: string };
     info?: { address: string[]; phones: string[]; emails: string[]; workingHours: string[] };
   } | null>(null);
+  const [settings, setSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const fetchContent = async () => {
+    const fetchData = async () => {
       try {
-        const { data } = await api.get("/pages/contact");
-        setContent(data.content);
+        const [pageData, settingsData] = await Promise.all([
+          api.get("/pages/contact"),
+          api.get("/settings")
+        ]);
+        setContent(pageData.data.content);
+        setSettings(settingsData.data);
       } catch (error) {
-        console.error("Failed to fetch contact page content", error);
+        console.error("Failed to fetch contact page data", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchContent();
+    fetchData();
   }, []);
 
   const [formData, setFormData] = useState({
@@ -120,13 +125,38 @@ const Contact = () => {
     description: "Have questions about our products or services? We're here to help. Reach out to us and we'll respond as soon as possible."
   };
 
+  // Use settings data if available, otherwise use page content or defaults
   const info = content?.info;
-  const contactCards = info ? [
+  const contactCards = settings ? [
+    {
+      icon: MapPin,
+      title: "Visit Us",
+      details: [
+        `${settings.address || "123 Export Zone, Industrial Area"}`,
+        `${settings.city || "Mumbai"}, ${settings.state || "Maharashtra"} ${settings.pincode || "400001"}, ${settings.country || "India"}`
+      ]
+    },
+    {
+      icon: Phone,
+      title: "Call Us",
+      details: [settings.phone || "+91 123 456 7890", settings.alternatePhone || "+91 098 765 4321"].filter(Boolean)
+    },
+    {
+      icon: Mail,
+      title: "Email Us",
+      details: [settings.email || "info@njrexim.com", settings.alternateEmail || "sales@njrexim.com"].filter(Boolean)
+    },
+    {
+      icon: Clock,
+      title: "Working Hours",
+      details: settings.workingHours || ["Monday - Friday: 9:00 AM - 6:00 PM", "Saturday: 9:00 AM - 1:00 PM"]
+    },
+  ] : (info ? [
     { icon: MapPin, title: "Visit Us", details: info.address },
     { icon: Phone, title: "Call Us", details: info.phones },
     { icon: Mail, title: "Email Us", details: info.emails },
     { icon: Clock, title: "Working Hours", details: info.workingHours },
-  ] : defaultContactInfo;
+  ] : defaultContactInfo);
 
   return (
     <Layout>
