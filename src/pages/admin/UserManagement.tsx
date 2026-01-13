@@ -117,14 +117,14 @@ const UserManagement = () => {
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">User Governance</h1>
+                    <h1 className="text-3xl font-extrabold tracking-tight text-secondary">User Governance</h1>
                     <div className="flex items-center gap-2 text-slate-500 text-sm">
-                        <ShieldAlert className="w-4 h-4 text-indigo-600" />
+                        <ShieldAlert className="w-4 h-4 text-primary" />
                         <span>Manage administrative access and role assignments.</span>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="bg-indigo-50/50 text-indigo-600 border-indigo-100 hidden sm:flex">
+                    <Badge variant="outline" className="bg-primary/10/50 text-primary border-primary/20 hidden sm:flex">
                         {users.length} Active Personnel
                     </Badge>
                 </div>
@@ -184,12 +184,12 @@ const UserManagement = () => {
                                                 <div className={cn(
                                                     "w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ring-2 ring-white shadow-sm",
                                                     user.role === 'super-admin'
-                                                        ? "bg-indigo-600 text-white"
+                                                        ? "bg-primary text-white"
                                                         : "bg-slate-200 text-slate-600"
                                                 )}>
                                                     {user.name.charAt(0).toUpperCase()}
                                                 </div>
-                                                <span className="font-bold text-slate-900">{user.name}</span>
+                                                <span className="font-bold text-secondary">{user.name}</span>
                                             </div>
                                         </TableCell>
                                         <TableCell>
@@ -204,7 +204,7 @@ const UserManagement = () => {
                                                 className={cn(
                                                     "font-bold px-2 py-0.5 h-6 text-[10px] uppercase border",
                                                     user.role === 'super-admin'
-                                                        ? "bg-indigo-50 text-indigo-700 border-indigo-100"
+                                                        ? "bg-primary/10 text-indigo-700 border-primary/20"
                                                         : "bg-slate-100 text-slate-600 border-slate-200"
                                                 )}
                                             >
@@ -254,7 +254,7 @@ const UserManagement = () => {
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent className="sm:max-w-md overflow-hidden p-0 border-none shadow-2xl">
-                    <div className="bg-slate-900 px-8 py-6 flex items-center justify-between">
+                    <div className="bg-secondary px-8 py-6 flex items-center justify-between">
                         <div className="space-y-1">
                             <DialogTitle className="text-white flex items-center gap-2 text-xl font-extrabold tracking-tight">
                                 <UserCog className="w-5 h-5 text-indigo-400" />
@@ -306,7 +306,7 @@ const UserManagement = () => {
                                         <SelectItem value="admin" className="font-medium">
                                             Standard Administrator
                                         </SelectItem>
-                                        <SelectItem value="super-admin" className="font-bold text-indigo-600">
+                                        <SelectItem value="super-admin" className="font-bold text-primary">
                                             Super Administrator
                                         </SelectItem>
                                     </SelectContent>
@@ -318,7 +318,7 @@ const UserManagement = () => {
                         </div>
 
                         <div className="flex flex-col gap-3 pt-4 border-t border-slate-100">
-                            <Button type="submit" className="w-full bg-slate-900 hover:bg-slate-800 text-white h-12 font-extrabold shadow-xl shadow-slate-900/20 text-sm transition-all focus:scale-[0.98]">
+                            <Button type="submit" className="w-full bg-secondary hover:bg-secondary/90 text-white h-12 font-extrabold shadow-xl shadow-slate-900/20 text-sm transition-all focus:scale-[0.98]">
                                 <ShieldCheck className="w-4 h-4 mr-2" />
                                 Commit Permission Changes
                             </Button>

@@ -10,6 +10,7 @@ import Loader from "@/components/ui/Loader";
 const Products = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [productCategories, setProductCategories] = useState<any[]>([]);
+  const [pageContent, setPageContent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   // Default fallback data
@@ -87,9 +88,13 @@ const Products = () => {
   ];
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       try {
-        const { data } = await api.get("/products");
+        const [productsData, pageData] = await Promise.all([
+          api.get("/products"),
+          api.get("/pages/products")
+        ]);
+        const { data } = productsData;
         if (data && data.length > 0) {
           // Group products by category
           const categoriesMap = new Map();
@@ -110,14 +115,15 @@ const Products = () => {
         } else {
           setProductCategories(defaultCategories);
         }
+        setPageContent(pageData.data.content);
       } catch (error) {
-        console.error("Failed to fetch products", error);
+        console.error("Failed to fetch data", error);
         setProductCategories(defaultCategories);
       } finally {
         setLoading(false);
       }
     };
-    fetchProducts();
+    fetchData();
   }, []);
 
   if (loading) return <Loader />;
@@ -131,6 +137,14 @@ const Products = () => {
       )
   );
 
+  // Use page content with fallback
+  const hero = pageContent?.hero || {
+    badge: "Our Products",
+    title: "Premium Quality",
+    highlightedText: "Export Products",
+    description: "Explore our comprehensive range of agricultural and food products, carefully sourced and prepared to meet international quality standards."
+  };
+
   return (
     <Layout>
       <SEO
@@ -143,14 +157,13 @@ const Products = () => {
         <div className="container-custom">
           <div className="max-w-3xl">
             <span className="inline-block px-4 py-2 bg-primary/20 text-primary-foreground text-sm font-medium uppercase tracking-widest rounded-full mb-6 border border-primary/30">
-              Our Products
+              {hero.badge}
             </span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Premium Quality <span className="text-golden">Export Products</span>
+              {hero.title} <span className="text-golden">{hero.highlightedText}</span>
             </h1>
             <p className="text-lg text-secondary-foreground/80 leading-relaxed mb-8">
-              Explore our comprehensive range of agricultural and food products, carefully sourced
-              and prepared to meet international quality standards.
+              {hero.description}
             </p>
 
             {/* Search Bar */}

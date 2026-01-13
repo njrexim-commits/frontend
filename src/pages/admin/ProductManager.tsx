@@ -132,13 +132,13 @@ const ProductManager = () => {
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Product Catalog</h1>
+                    <h1 className="text-3xl font-extrabold tracking-tight text-secondary">Product Catalog</h1>
                     <div className="flex items-center gap-2 text-slate-500 text-sm">
                         <Package className="w-4 h-4" />
                         <span>Manage your export product inventory and featured items.</span>
                     </div>
                 </div>
-                <Button onClick={() => handleOpenDialog()} className="bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-600/20">
+                <Button onClick={() => handleOpenDialog()} className="bg-primary hover:bg-primary/90 shadow-md shadow-blue-600/20">
                     <Plus className="mr-2 h-4 w-4" /> Add New Product
                 </Button>
             </div>
@@ -253,7 +253,7 @@ const ProductManager = () => {
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent className="sm:max-w-2xl overflow-hidden p-0 border-none shadow-2xl">
-                    <div className="bg-slate-900 px-6 py-4 flex items-center justify-between">
+                    <div className="bg-secondary px-6 py-4 flex items-center justify-between">
                         <div className="space-y-1">
                             <DialogTitle className="text-white flex items-center gap-2 text-xl font-bold">
                                 <Package className="w-5 h-5 text-blue-400" />
@@ -303,7 +303,7 @@ const ProductManager = () => {
                                     </div>
                                     {selectedFiles && selectedFiles.length > 0 && (
                                         <div className="flex gap-2 mt-2">
-                                            <Badge variant="secondary" className="bg-blue-50 text-blue-700 border-blue-100">
+                                            <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
                                                 {selectedFiles.length} files selected
                                             </Badge>
                                         </div>
@@ -360,7 +360,7 @@ const ProductManager = () => {
                             <Button type="button" variant="ghost" onClick={() => setIsDialogOpen(false)} className="text-slate-500 px-6">
                                 Cancel
                             </Button>
-                            <Button type="submit" className="bg-slate-900 hover:bg-slate-800 text-white px-8 min-w-[140px] shadow-lg shadow-slate-900/10">
+                            <Button type="submit" className="bg-secondary hover:bg-secondary/90 text-white px-8 min-w-[140px] shadow-lg shadow-slate-900/10">
                                 {editingProduct ? "Update Catalog" : "Add to Catalog"}
                             </Button>
                         </div>

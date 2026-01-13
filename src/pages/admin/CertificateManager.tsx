@@ -95,13 +95,13 @@ const CertificateManager = () => {
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Compliance & Certs</h1>
+                    <h1 className="text-3xl font-extrabold tracking-tight text-secondary">Compliance & Certs</h1>
                     <div className="flex items-center gap-2 text-slate-500 text-sm">
                         <Award className="w-4 h-4 text-amber-500" />
                         <span>Manage your organization's legal and quality certifications.</span>
                     </div>
                 </div>
-                <Button onClick={() => setIsDialogOpen(true)} className="bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-600/20">
+                <Button onClick={() => setIsDialogOpen(true)} className="bg-primary hover:bg-primary/90 shadow-md shadow-primary/20">
                     <Plus className="mr-2 h-4 w-4" /> Add Certificate
                 </Button>
             </div>
@@ -154,7 +154,7 @@ const CertificateManager = () => {
                                 filteredCertificates.map((cert) => (
                                     <TableRow key={cert._id} className="group hover:bg-slate-50/80 transition-colors border-slate-50">
                                         <TableCell>
-                                            <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 border border-indigo-100">
+                                            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
                                                 <FileText size={18} />
                                             </div>
                                         </TableCell>
@@ -179,7 +179,7 @@ const CertificateManager = () => {
                                         </TableCell>
                                         <TableCell className="text-right px-6">
                                             <div className="flex items-center justify-end gap-2">
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50" asChild title="View Document">
+                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-primary hover:bg-primary/10" asChild title="View Document">
                                                     <a href={cert.fileUrl} target="_blank" rel="noreferrer">
                                                         <Eye size={16} />
                                                     </a>
@@ -214,7 +214,7 @@ const CertificateManager = () => {
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent className="sm:max-w-md overflow-hidden p-0 border-none shadow-2xl">
-                    <div className="bg-slate-900 px-6 py-4 flex items-center justify-between">
+                    <div className="bg-secondary px-6 py-4 flex items-center justify-between">
                         <div className="space-y-1">
                             <DialogTitle className="text-white flex items-center gap-2 text-lg font-bold">
                                 <Award className="w-5 h-5 text-amber-400" />
@@ -252,11 +252,11 @@ const CertificateManager = () => {
                                 <div className="relative group transition-all">
                                     <div className={cn(
                                         "min-h-[100px] bg-slate-50 rounded-xl border-2 border-dashed flex flex-col items-center justify-center p-4 transition-all group-hover:bg-slate-100",
-                                        selectedFile ? "border-indigo-300 bg-indigo-50/30" : "border-slate-200"
+                                        selectedFile ? "border-indigo-300 bg-primary/10/30" : "border-slate-200"
                                     )}>
                                         {selectedFile ? (
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded bg-white shadow-sm flex items-center justify-center text-indigo-600">
+                                                <div className="w-10 h-10 rounded bg-white shadow-sm flex items-center justify-center text-primary">
                                                     <FileText size={20} />
                                                 </div>
                                                 <div className="flex flex-col">
@@ -291,7 +291,7 @@ const CertificateManager = () => {
                         </div>
 
                         <div className="flex flex-col gap-3 pt-4">
-                            <Button type="submit" className="w-full bg-slate-900 hover:bg-slate-800 text-white h-11 font-bold shadow-lg shadow-slate-900/10">
+                            <Button type="submit" className="w-full bg-secondary hover:bg-secondary/90 text-white h-11 font-bold shadow-lg shadow-slate-900/10">
                                 <Award className="w-4 h-4 mr-2" />
                                 Upload & Verify
                             </Button>

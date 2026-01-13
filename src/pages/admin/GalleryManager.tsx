@@ -124,13 +124,13 @@ const GalleryManager = () => {
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Visual Gallery</h1>
+                    <h1 className="text-3xl font-extrabold tracking-tight text-secondary">Visual Gallery</h1>
                     <div className="flex items-center gap-2 text-slate-500 text-sm font-medium">
                         <ImageIcon className="w-4 h-4 text-pink-500" />
                         <span>Showcase your company's journey and achievements.</span>
                     </div>
                 </div>
-                <Button onClick={() => setIsDialogOpen(true)} className="bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-600/20 px-6 font-bold">
+                <Button onClick={() => setIsDialogOpen(true)} className="bg-primary hover:bg-primary/90 shadow-md shadow-primary/20 px-6 font-bold">
                     <Plus className="mr-2 h-4 w-4" /> Add Image
                 </Button>
             </div>
@@ -157,7 +157,7 @@ const GalleryManager = () => {
                                     className={cn(
                                         "px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap",
                                         selectedCategory === cat
-                                            ? "bg-slate-900 text-white shadow-md shadow-slate-900/10"
+                                            ? "bg-secondary text-white shadow-md shadow-slate-900/10"
                                             : "bg-white text-slate-600 hover:bg-slate-50 border border-slate-200"
                                     )}
                                 >
@@ -212,7 +212,7 @@ const GalleryManager = () => {
                                         </div>
                                     </div>
                                     <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button className="bg-white/90 backdrop-blur-md p-1.5 rounded-full shadow-lg text-slate-900 border border-white/40">
+                                        <button className="bg-white/90 backdrop-blur-md p-1.5 rounded-full shadow-lg text-secondary border border-white/40">
                                             <Maximize2 size={12} />
                                         </button>
                                     </div>
@@ -225,7 +225,7 @@ const GalleryManager = () => {
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent className="sm:max-w-xl overflow-hidden p-0 border-none shadow-2xl">
-                    <div className="bg-slate-900 px-8 py-6 flex items-center justify-between">
+                    <div className="bg-secondary px-8 py-6 flex items-center justify-between">
                         <div className="space-y-1">
                             <DialogTitle className="text-white flex items-center gap-2 text-xl font-extrabold tracking-tight">
                                 <ImageIcon className="w-5 h-5 text-pink-400" />
@@ -307,7 +307,7 @@ const GalleryManager = () => {
                         </div>
 
                         <div className="flex flex-col gap-3 pt-4 border-t border-slate-100">
-                            <Button type="submit" className="w-full bg-slate-900 hover:bg-slate-800 text-white h-12 font-extrabold shadow-xl shadow-slate-900/20 text-sm">
+                            <Button type="submit" className="w-full bg-secondary hover:bg-secondary/90 text-white h-12 font-extrabold shadow-xl shadow-slate-900/20 text-sm">
                                 <Plus className="w-4 h-4 mr-2" />
                                 Add To Gallery
                             </Button>

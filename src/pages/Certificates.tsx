@@ -7,6 +7,7 @@ import Loader from "@/components/ui/Loader";
 
 const Certificates = () => {
   const [certifications, setCertifications] = useState<any[]>([]);
+  const [pageContent, setPageContent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   const defaultCertifications = [
@@ -55,9 +56,13 @@ const Certificates = () => {
   ];
 
   useEffect(() => {
-    const fetchCertificates = async () => {
+    const fetchData = async () => {
       try {
-        const { data } = await api.get("/certificates");
+        const [certsData, pageData] = await Promise.all([
+          api.get("/certificates"),
+          api.get("/pages/certificates")
+        ]);
+        const { data } = certsData;
         if (data && data.length > 0) {
           const formattedCerts = data.map((cert: any) => ({
             icon: Award, // Default icon, can be customized based on cert type
@@ -70,14 +75,15 @@ const Certificates = () => {
         } else {
           setCertifications(defaultCertifications);
         }
+        setPageContent(pageData.data.content);
       } catch (error) {
-        console.error("Failed to fetch certificates", error);
+        console.error("Failed to fetch data", error);
         setCertifications(defaultCertifications);
       } finally {
         setLoading(false);
       }
     };
-    fetchCertificates();
+    fetchData();
   }, []);
 
   if (loading) return <Loader />;

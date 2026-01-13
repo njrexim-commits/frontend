@@ -22,6 +22,7 @@ const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [pageContent, setPageContent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   const defaultBlogPosts: BlogPost[] = [
@@ -58,9 +59,13 @@ const Blog = () => {
   ];
 
   useEffect(() => {
-    const fetchBlogs = async () => {
+    const fetchData = async () => {
       try {
-        const { data } = await api.get("/blogs");
+        const [blogsData, pageData] = await Promise.all([
+          api.get("/blogs"),
+          api.get("/pages/blog")
+        ]);
+        const { data } = blogsData;
         if (data && data.length > 0) {
           const formattedBlogs = data.map((blog: any) => ({
             id: blog._id,
@@ -76,14 +81,15 @@ const Blog = () => {
         } else {
           setBlogPosts(defaultBlogPosts);
         }
+        setPageContent(pageData.data.content);
       } catch (error) {
-        console.error("Failed to fetch blogs", error);
+        console.error("Failed to fetch data", error);
         setBlogPosts(defaultBlogPosts);
       } finally {
         setLoading(false);
       }
     };
-    fetchBlogs();
+    fetchData();
   }, []);
 
   if (loading) return <Loader />;

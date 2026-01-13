@@ -134,10 +134,10 @@ const BlogManager = () => {
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Manage Blogs</h1>
+                    <h1 className="text-3xl font-extrabold tracking-tight text-secondary">Manage Blogs</h1>
                     <p className="text-slate-500 text-sm">Create, edit, and manage your company blog posts.</p>
                 </div>
-                <Button onClick={() => handleOpenDialog()} className="bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-600/20">
+                <Button onClick={() => handleOpenDialog()} className="bg-primary hover:bg-primary/90 shadow-md shadow-primary/20">
                     <Plus className="mr-2 h-4 w-4" /> Add New Post
                 </Button>
             </div>
@@ -233,7 +233,7 @@ const BlogManager = () => {
                                                     <DropdownMenuItem onClick={() => handleOpenDialog(blog)} className="cursor-pointer">
                                                         <Edit className="mr-2 h-4 w-4" /> Edit Post
                                                     </DropdownMenuItem>
-                                                    <DropdownMenuItem className="cursor-pointer text-indigo-600 focus:text-indigo-700">
+                                                    <DropdownMenuItem className="cursor-pointer text-primary focus:text-indigo-700">
                                                         <ExternalLink className="mr-2 h-4 w-4" /> View Live
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
@@ -253,7 +253,7 @@ const BlogManager = () => {
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent className="sm:max-w-2xl overflow-hidden p-0 border-none shadow-2xl">
-                    <div className="bg-slate-900 px-6 py-4 flex items-center justify-between">
+                    <div className="bg-secondary px-6 py-4 flex items-center justify-between">
                         <div className="space-y-1">
                             <DialogTitle className="text-white flex items-center gap-2">
                                 <FileText className="w-5 h-5 text-indigo-400" />
@@ -347,7 +347,7 @@ const BlogManager = () => {
                                     onClick={() => setFormData({ ...formData, isPublished: !formData.isPublished })}
                                     className={cn(
                                         "relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2",
-                                        formData.isPublished ? "bg-indigo-600" : "bg-slate-200"
+                                        formData.isPublished ? "bg-primary" : "bg-slate-200"
                                     )}
                                 >
                                     <span
@@ -364,7 +364,7 @@ const BlogManager = () => {
                                 <Button type="button" variant="ghost" onClick={() => setIsDialogOpen(false)} className="text-slate-500 h-10 px-6">
                                     Cancel
                                 </Button>
-                                <Button type="submit" className="bg-slate-900 hover:bg-slate-800 text-white h-10 px-8">
+                                <Button type="submit" className="bg-secondary hover:bg-secondary/90 text-white h-10 px-8">
                                     {editingBlog ? "Save Changes" : "Publish Post"}
                                 </Button>
                             </div>

@@ -40,7 +40,7 @@ const Dashboard = () => {
     }, []);
 
     const statCards = [
-        { title: "Total Blogs", value: stats.blogs, icon: FileText, color: "text-blue-500", bg: "bg-blue-50", border: "border-blue-100", trend: "+2.5%" },
+        { title: "Total Blogs", value: stats.blogs, icon: FileText, color: "text-blue-500", bg: "bg-primary/10", border: "border-primary/20", trend: "+2.5%" },
         { title: "Total Products", value: stats.products, icon: Package, color: "text-emerald-500", bg: "bg-emerald-50", border: "border-emerald-100", trend: "+1.2%" },
         { title: "Certificates", value: stats.certificates, icon: Award, color: "text-violet-500", bg: "bg-violet-50", border: "border-violet-100", trend: "Stable" },
         { title: "New Inquiries", value: stats.inquiries, icon: MessageSquare, color: "text-orange-500", bg: "bg-orange-50", border: "border-orange-100", trend: "+4.1%" },
@@ -53,7 +53,7 @@ const Dashboard = () => {
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="flex flex-col gap-2">
-                <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">
+                <h1 className="text-3xl font-extrabold tracking-tight text-secondary md:text-4xl">
                     Dashboard Overview
                 </h1>
                 <p className="text-slate-500 max-w-2xl">
@@ -72,7 +72,7 @@ const Dashboard = () => {
                         </CardHeader>
                         <CardContent>
                             <div className="flex items-baseline justify-between mt-1">
-                                <div className="text-3xl font-bold text-slate-900">{card.value}</div>
+                                <div className="text-3xl font-bold text-secondary">{card.value}</div>
                                 <div className={cn("flex items-center text-xs font-medium px-2 py-0.5 rounded-full",
                                     card.trend.includes('+') ? "bg-emerald-50 text-emerald-600" : "bg-slate-100 text-slate-600"
                                 )}>
@@ -82,7 +82,7 @@ const Dashboard = () => {
                             </div>
                             <div className="mt-4 w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
                                 <div className={cn("h-full rounded-full transition-all duration-1000 delay-300",
-                                    idx === 0 ? "w-[75%] bg-blue-500" :
+                                    idx === 0 ? "w-[75%] bg-primary/100" :
                                         idx === 1 ? "w-[60%] bg-emerald-500" :
                                             idx === 2 ? "w-[45%] bg-violet-500" : "w-[90%] bg-orange-500"
                                 )}></div>
@@ -105,8 +105,8 @@ const Dashboard = () => {
                         <Button variant="outline" size="sm" className="text-xs h-8">View Detailed Logs</Button>
                     </CardHeader>
                     <CardContent className="pt-8 pb-10 flex flex-col items-center justify-center text-center">
-                        <div className="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center mb-4">
-                            <TrendingUp className="w-8 h-8 text-indigo-600" />
+                        <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+                            <TrendingUp className="w-8 h-8 text-primary" />
                         </div>
                         <h3 className="text-lg font-semibold text-slate-800">Everything seems to be updated</h3>
                         <p className="text-slate-500 max-w-sm mt-2 text-sm leading-relaxed">
@@ -137,7 +137,7 @@ const Dashboard = () => {
                             ))}
                         </div>
                         <div className="px-6 pt-4">
-                            <Button variant="ghost" className="w-full text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 text-xs h-8 py-0">
+                            <Button variant="ghost" className="w-full text-primary hover:text-indigo-700 hover:bg-primary/10 text-xs h-8 py-0">
                                 View all activity
                             </Button>
                         </div>

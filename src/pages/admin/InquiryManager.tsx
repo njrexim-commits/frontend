@@ -114,7 +114,7 @@ const InquiryManager = () => {
     const getStatusStyles = (status: string) => {
         switch (status) {
             case 'new':
-                return "bg-blue-50 text-blue-700 border-blue-100";
+                return "bg-primary/10 text-primary border-primary/20";
             case 'read':
                 return "bg-slate-100 text-slate-600 border-slate-200";
             case 'resolved':
@@ -128,11 +128,11 @@ const InquiryManager = () => {
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Inquiry Inbox</h1>
+                    <h1 className="text-3xl font-extrabold tracking-tight text-secondary">Inquiry Inbox</h1>
                     <p className="text-slate-500 text-sm">Manage and respond to customer inquiries from the contact form.</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="bg-blue-50/50 text-blue-600 border-blue-100 h-8">
+                    <Badge variant="outline" className="bg-primary/10/50 text-primary border-primary/20 h-8">
                         {inquiries.filter(i => i.status === 'new').length} New Messages
                     </Badge>
                 </div>
@@ -194,7 +194,7 @@ const InquiryManager = () => {
                                         key={iq._id}
                                         className={cn(
                                             "group hover:bg-slate-50/80 transition-colors border-slate-50 cursor-pointer",
-                                            iq.status === 'new' ? "bg-indigo-50/30" : ""
+                                            iq.status === 'new' ? "bg-primary/10/30" : ""
                                         )}
                                         onClick={() => handleViewInquiry(iq)}
                                     >
@@ -202,12 +202,12 @@ const InquiryManager = () => {
                                             <div className="flex items-center gap-3">
                                                 <div className={cn(
                                                     "w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs shadow-sm",
-                                                    iq.status === 'new' ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-500"
+                                                    iq.status === 'new' ? "bg-primary text-white" : "bg-slate-100 text-slate-500"
                                                 )}>
                                                     {iq.name.charAt(0).toUpperCase()}
                                                 </div>
                                                 <div className="flex flex-col gap-0.5">
-                                                    <span className={cn("text-slate-900", iq.status === 'new' ? "font-bold" : "font-medium")}>{iq.name}</span>
+                                                    <span className={cn("text-secondary", iq.status === 'new' ? "font-bold" : "font-medium")}>{iq.name}</span>
                                                     <span className="text-[11px] text-slate-400 flex items-center gap-1">
                                                         <Mail className="w-2.5 h-2.5" />
                                                         {iq.email}
@@ -273,9 +273,9 @@ const InquiryManager = () => {
 
             <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
                 <DialogContent className="sm:max-w-2xl overflow-hidden p-0 border-none shadow-2xl">
-                    <div className="bg-slate-900 px-6 py-5 flex items-center justify-between">
+                    <div className="bg-secondary px-6 py-5 flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/20">
+                            <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/20">
                                 {selectedInquiry?.name.charAt(0).toUpperCase()}
                             </div>
                             <div>
@@ -293,14 +293,14 @@ const InquiryManager = () => {
                             <div className="space-y-4">
                                 <div className="space-y-1">
                                     <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Contact Email</Label>
-                                    <div className="flex items-center gap-2 text-slate-900 font-medium group cursor-pointer hover:text-indigo-600 transition-colors">
+                                    <div className="flex items-center gap-2 text-secondary font-medium group cursor-pointer hover:text-primary transition-colors">
                                         <Mail className="w-4 h-4 text-slate-400 group-hover:text-indigo-500" />
                                         {selectedInquiry?.email}
                                     </div>
                                 </div>
                                 <div className="space-y-1">
                                     <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Contact Number</Label>
-                                    <div className="flex items-center gap-2 text-slate-900 font-medium">
+                                    <div className="flex items-center gap-2 text-secondary font-medium">
                                         <Phone className="w-4 h-4 text-slate-400" />
                                         {selectedInquiry?.phone || "Not provided"}
                                     </div>
@@ -309,7 +309,7 @@ const InquiryManager = () => {
                             <div className="space-y-4">
                                 <div className="space-y-1">
                                     <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Date Received</Label>
-                                    <div className="flex items-center gap-2 text-slate-900 font-medium">
+                                    <div className="flex items-center gap-2 text-secondary font-medium">
                                         <Calendar className="w-4 h-4 text-slate-400" />
                                         {selectedInquiry && new Date(selectedInquiry.createdAt).toLocaleString(undefined, {
                                             dateStyle: 'long',
@@ -319,7 +319,7 @@ const InquiryManager = () => {
                                 </div>
                                 <div className="space-y-1">
                                     <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Message Subject</Label>
-                                    <div className="text-slate-900 font-bold group-hover:text-indigo-600 transition-colors">
+                                    <div className="text-secondary font-bold group-hover:text-primary transition-colors">
                                         {selectedInquiry?.subject || "(No Subject)"}
                                     </div>
                                 </div>

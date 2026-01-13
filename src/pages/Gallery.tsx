@@ -9,6 +9,7 @@ import Loader from "@/components/ui/Loader";
 const Gallery = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [galleryImages, setGalleryImages] = useState<any[]>([]);
+  const [pageContent, setPageContent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   const defaultGalleryImages = [
@@ -51,9 +52,13 @@ const Gallery = () => {
   ];
 
   useEffect(() => {
-    const fetchGallery = async () => {
+    const fetchData = async () => {
       try {
-        const { data } = await api.get("/gallery");
+        const [galleryData, pageData] = await Promise.all([
+          api.get("/gallery"),
+          api.get("/pages/gallery")
+        ]);
+        const { data } = galleryData;
         if (data && data.length > 0) {
           const formattedImages = data.map((item: any) => ({
             id: item._id,
@@ -65,14 +70,15 @@ const Gallery = () => {
         } else {
           setGalleryImages(defaultGalleryImages);
         }
+        setPageContent(pageData.data.content);
       } catch (error) {
-        console.error("Failed to fetch gallery", error);
+        console.error("Failed to fetch data", error);
         setGalleryImages(defaultGalleryImages);
       } finally {
         setLoading(false);
       }
     };
-    fetchGallery();
+    fetchData();
   }, []);
 
   if (loading) return <Loader />;

@@ -92,7 +92,7 @@ const Settings = () => {
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">System Configuration</h1>
+                    <h1 className="text-3xl font-extrabold tracking-tight text-secondary">System Configuration</h1>
                     <div className="flex items-center gap-2 text-slate-500 text-sm">
                         <SettingsIcon className="w-4 h-4 text-slate-400" />
                         <span>Manage your global application identity and public contact nodes.</span>
@@ -101,7 +101,7 @@ const Settings = () => {
                 <Button
                     onClick={handleSubmit}
                     disabled={saving}
-                    className="bg-slate-900 hover:bg-slate-800 text-white shadow-xl shadow-slate-900/10 px-8 font-bold h-11"
+                    className="bg-secondary hover:bg-secondary/90 text-white shadow-xl shadow-slate-900/10 px-8 font-bold h-11"
                 >
                     {saving ? (
                         <>
@@ -255,7 +255,7 @@ const Settings = () => {
                             </div>
 
                             <div className="pt-6">
-                                <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 flex gap-4">
+                                <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 flex gap-4">
                                     <ShieldCheck className="w-5 h-5 text-indigo-500 shrink-0 mt-1" />
                                     <div className="space-y-1">
                                         <p className="text-[11px] font-bold text-indigo-900 uppercase tracking-tight">Security Check</p>
@@ -273,7 +273,7 @@ const Settings = () => {
                 <Button
                     onClick={handleSubmit}
                     disabled={saving}
-                    className="rounded-full h-14 w-14 p-0 bg-indigo-600 hover:bg-indigo-700 shadow-2xl shadow-indigo-600/40 ring-4 ring-white"
+                    className="rounded-full h-14 w-14 p-0 bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/40 ring-4 ring-white"
                 >
                     {saving ? <Loader2 className="h-6 w-6 animate-spin" /> : <Save className="h-6 w-6" />}
                 </Button>

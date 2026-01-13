@@ -30,7 +30,7 @@ const Setup = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-indigo-50">
+        <div className="flex items-center justify-center min-h-screen bg-primary/10">
             <Card className="w-full max-w-md border-t-4 border-indigo-600">
                 <CardHeader className="space-y-1 text-center">
                     <CardTitle className="text-2xl font-bold">Initial System Setup</CardTitle>
@@ -73,7 +73,7 @@ const Setup = () => {
                         </div>
                     </CardContent>
                     <CardFooter>
-                        <Button className="w-full bg-indigo-600 hover:bg-indigo-700" type="submit" disabled={loading}>
+                        <Button className="w-full bg-primary hover:bg-primary/90" type="submit" disabled={loading}>
                             {loading ? "Creating..." : "Complete Setup"}
                         </Button>
                     </CardFooter>
