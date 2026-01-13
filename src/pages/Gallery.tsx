@@ -25,7 +25,7 @@ const Gallery = () => {
         if (data && data.length > 0) {
           const formattedImages = data.map((item: any) => ({
             id: item._id,
-            url: item.image || item.url,
+            url: item.imageUrl || item.image || item.url, // Prioritize imageUrl as per schema
             title: item.title || "Gallery Image",
             category: item.category || "General",
           }));
@@ -67,14 +67,15 @@ const Gallery = () => {
         <div className="container-custom">
           <div className="max-w-3xl">
             <span className="inline-block px-4 py-2 bg-primary/20 text-primary-foreground text-sm font-medium uppercase tracking-widest rounded-full mb-6 border border-primary/30">
-              Gallery
+              {pageContent?.hero?.badge || "Gallery"}
             </span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Visual <span className="text-golden">Journey</span>
+              {pageContent?.hero?.title || "Visual"}{" "}
+              <span className="text-golden">{pageContent?.hero?.highlightedText || "Journey"}</span>
             </h1>
             <p className="text-lg text-secondary-foreground/80 leading-relaxed">
-              Explore our collection of premium products, state-of-the-art facilities,
-              and global operations through our image gallery.
+              {pageContent?.hero?.description ||
+                "Explore our collection of premium products, state-of-the-art facilities, and global operations through our image gallery."}
             </p>
           </div>
         </div>
@@ -84,6 +85,11 @@ const Gallery = () => {
       <section className="py-8 bg-background border-b border-border">
         <div className="container-custom">
           <div className="flex flex-wrap gap-3 justify-center">
+            {pageContent?.categories?.description && (
+              <p className="w-full text-center text-muted-foreground mb-4">
+                {pageContent.categories.description}
+              </p>
+            )}
             {categories.map((category) => (
               <button
                 key={category}

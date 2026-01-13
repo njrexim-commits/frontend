@@ -44,7 +44,7 @@ const Blog = () => {
             category: blog.category || "Uncategorized",
             date: blog.createdAt || blog.date,
             readTime: `${Math.ceil((blog.content?.length || 500) / 200)} min read`,
-            author: blog.author || "NJR Exim Team",
+            author: blog.author?.name || blog.author || "NJR Exim Team",
           }));
           setBlogPosts(formattedBlogs);
         } else {
@@ -88,14 +88,15 @@ const Blog = () => {
         <div className="container-custom">
           <div className="max-w-3xl">
             <span className="inline-block px-4 py-2 bg-primary/20 text-primary-foreground text-sm font-medium uppercase tracking-widest rounded-full mb-6 border border-primary/30">
-              Blog & Insights
+              {pageContent?.hero?.badge || "Blog & Insights"}
             </span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Industry <span className="text-golden">Insights</span>
+              {pageContent?.hero?.title || "Industry"}{" "}
+              <span className="text-golden">{pageContent?.hero?.highlightedText || "Insights"}</span>
             </h1>
             <p className="text-lg text-secondary-foreground/80 leading-relaxed mb-8">
-              Stay informed with the latest trends, insights, and news from the agricultural
-              export industry.
+              {pageContent?.hero?.description ||
+                "Stay informed with the latest trends, insights, and news from the agricultural export industry."}
             </p>
 
             {/* Search Bar */}
@@ -232,12 +233,12 @@ const Blog = () => {
       {/* Newsletter CTA */}
       <section className="section-padding bg-primary text-primary-foreground">
         <div className="container-custom text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Stay Updated with Our Newsletter
-          </h2>
-          <p className="text-lg text-primary-foreground/90 max-w-2xl mx-auto mb-8">
-            Subscribe to receive the latest industry insights, market trends, and company updates directly to your inbox.
-          </p>
+          <div className="max-w-2xl mx-auto text-center">
+            <h2 className="text-3xl font-bold mb-4">{pageContent?.newsletter?.title || "Stay Updated with Our Newsletter"}</h2>
+            <p className="text-lg text-primary-foreground/90 max-w-2xl mx-auto mb-8">
+              {pageContent?.newsletter?.description || "Subscribe to receive the latest industry insights, market trends, and company updates directly to your inbox."}
+            </p>
+          </div>
           <div className="max-w-md mx-auto flex gap-3">
             <Input
               type="email"
