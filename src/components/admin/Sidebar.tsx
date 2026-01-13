@@ -82,12 +82,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, isMobile, userInfo, handleLogout
                 <div className="h-16 flex items-center justify-between px-6 border-b border-secondary/80 shrink-0">
                     <div className="flex items-center gap-3 overflow-hidden">
                         <img src="/sitelogo.png" alt="NJR Admin" className="h-8 w-auto object-contain" />
-                        <span className={cn(
-                            "text-lg font-bold text-white transition-all duration-300 whitespace-nowrap",
-                            !sidebarOpen && "opacity-0 w-0 translate-x-[-10px] md:hidden"
-                        )}>
-                            NJR Admin
-                        </span>
                     </div>
                     {isMobile && (
                         <Button
