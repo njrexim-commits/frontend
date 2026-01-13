@@ -134,7 +134,7 @@ const About = () => {
       <section className="section-padding bg-background">
         <div className="container-custom">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {pageValues.map((value: any) => (
+            {pageValues.map((value) => (
               <div key={value.title} className="bg-card p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6">
                   <value.icon className="w-8 h-8 text-primary" />
