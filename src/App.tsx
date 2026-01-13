@@ -26,6 +26,7 @@ import Settings from "./pages/admin/Settings";
 import Setup from "./pages/admin/Setup";
 import PageManager from "./pages/admin/PageManager";
 import TestimonialManager from "./pages/admin/TestimonialManager";
+import InviteSetup from "./pages/admin/InviteSetup";
 
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -50,6 +51,7 @@ const App = () => (
 
           {/* Admin Routes */}
           <Route path="/setup" element={<Setup />} />
+          <Route path="/admin/setup-invite" element={<InviteSetup />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Navigate to="dashboard" replace />} />

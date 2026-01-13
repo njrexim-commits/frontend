@@ -38,6 +38,7 @@ interface HeroSectionProps {
     description: string;
     buttonText: string;
     buttonLink: string;
+    image?: string;
     slides?: Array<{ id: number; image: string; alt: string }>;
   };
 }
@@ -71,29 +72,37 @@ const HeroSection = ({ content }: HeroSectionProps) => {
     },
   ];
 
-  const slides = content?.slides || defaultSlides;
+  // If a specific hero image is set via content management, use it as a single slide
+  const slides = content?.image
+    ? [{ id: 1, image: content.image, alt: content.title }]
+    : (content?.slides && content.slides.length > 0 ? content.slides : defaultSlides);
+
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const goToSlide = useCallback((index: number) => {
+    if (slides.length <= 1) return;
     if (isTransitioning) return;
     setIsTransitioning(true);
     setCurrentSlide(index);
     setTimeout(() => setIsTransitioning(false), 500);
-  }, [isTransitioning]);
+  }, [isTransitioning, slides.length]);
 
   const nextSlide = useCallback(() => {
+    if (slides.length <= 1) return;
     goToSlide((currentSlide + 1) % slides.length);
   }, [currentSlide, goToSlide, slides.length]);
 
   const prevSlide = useCallback(() => {
+    if (slides.length <= 1) return;
     goToSlide((currentSlide - 1 + slides.length) % slides.length);
   }, [currentSlide, goToSlide, slides.length]);
 
   useEffect(() => {
+    if (slides.length <= 1) return;
     const interval = setInterval(nextSlide, 5000);
     return () => clearInterval(interval);
-  }, [nextSlide]);
+  }, [nextSlide, slides.length]);
 
   return (
     <section className="relative h-screen min-h-[600px] overflow-hidden">

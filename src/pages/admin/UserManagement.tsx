@@ -25,7 +25,8 @@ import {
     Fingerprint,
     Users,
     UserPlus,
-    Lock
+    Lock,
+    Send
 } from "lucide-react";
 import {
     DropdownMenu,
@@ -44,12 +45,14 @@ interface UserInfo {
     email: string;
     role: string;
     createdAt: string;
+    isInvited?: boolean;
 }
 
 const UserManagement = () => {
     const [users, setUsers] = useState<UserInfo[]>([]);
     const [loading, setLoading] = useState(true);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [editingUser, setEditingUser] = useState<UserInfo | null>(null);
     const [formData, setFormData] = useState({
@@ -57,6 +60,13 @@ const UserManagement = () => {
         email: "",
         role: "admin",
     });
+
+    // Invite Form State
+    const [inviteData, setInviteData] = useState({
+        email: "",
+        role: "admin"
+    });
+    const [inviting, setInviting] = useState(false);
 
     const fetchUsers = async () => {
         try {
@@ -97,6 +107,24 @@ const UserManagement = () => {
         }
     };
 
+    const handleInvite = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setInviting(true);
+        try {
+            await api.post("/auth/invite", inviteData);
+            toast.success(`Invitation sent to ${inviteData.email}`);
+            setIsInviteDialogOpen(false);
+            setInviteData({ email: "", role: "admin" });
+            fetchUsers();
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || "Failed to invite user");
+        } finally {
+            setInviting(false);
+        }
+    };
+
+
+
     const handleDelete = async (id: string) => {
         if (window.confirm("Are you sure you want to revoke access for this user?")) {
             try {
@@ -127,9 +155,48 @@ const UserManagement = () => {
                     <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">User Governance</h1>
                     <p className="text-slate-500 text-sm">Manage administrative access and role assignments.</p>
                 </div>
-                <Button className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all hover:scale-105" disabled>
-                    <UserPlus className="mr-2 h-4 w-4" /> Invite Admin
-                </Button>
+
+                <Dialog open={isInviteDialogOpen} onOpenChange={setIsInviteDialogOpen}>
+                    <Button onClick={() => setIsInviteDialogOpen(true)} className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all hover:scale-105">
+                        <Send className="mr-2 h-4 w-4" /> Invite Admin
+                    </Button>
+                    <DialogContent>
+                        <DialogTitle>Invite New Admin</DialogTitle>
+                        <DialogDescription>
+                            Send an email invitation to a new administrator. They will receive a link to set up their account.
+                        </DialogDescription>
+                        <form onSubmit={handleInvite} className="space-y-4 pt-4">
+                            <div className="space-y-2">
+                                <Label>Email Address</Label>
+                                <Input
+                                    type="email"
+                                    placeholder="colleague@njrexim.com"
+                                    required
+                                    value={inviteData.email}
+                                    onChange={(e) => setInviteData({ ...inviteData, email: e.target.value })}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Role</Label>
+                                <Select
+                                    value={inviteData.role}
+                                    onValueChange={(val) => setInviteData({ ...inviteData, role: val })}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="admin">Admin</SelectItem>
+                                        <SelectItem value="super-admin">Super Admin</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <Button type="submit" className="w-full font-bold" disabled={inviting}>
+                                {inviting ? "Sending Invitation..." : "Send Invitation"}
+                            </Button>
+                        </form>
+                    </DialogContent>
+                </Dialog>
             </div>
 
             {/* Stats Summary */}
