@@ -45,7 +45,7 @@ const Header = () => {
   }, []);
 
   const navLinks = [
-    { name: "HOME", path: "/"},
+    { name: "HOME", path: "/" },
     { name: "ABOUT", path: "/about" },
     { name: "PRODUCTS", path: "/products", hasDropdown: true },
     { name: "CERTIFICATE", path: "/certificates" },
@@ -58,28 +58,16 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
           ? "bg-secondary/95 backdrop-blur-md shadow-lg"
           : "bg-secondary"
-      }`}
+        }`}
     >
       <div className="container-custom">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="relative">
-              <Globe className="w-10 h-10 text-golden transition-transform duration-300 group-hover:rotate-12" />
-              <div className="absolute inset-0 w-10 h-10 border-2 border-golden/30 rounded-full animate-pulse" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-bold text-white tracking-wider">
-                NJR <span className="text-golden">EXIM</span>
-              </span>
-              <span className="text-[10px] text-muted-foreground tracking-widest uppercase">
-                Global Trade Partner
-              </span>
-            </div>
+            <img src="/sitelogo.png" alt="NJR EXIM" className="h-16 w-auto object-contain" />
           </Link>
 
           {/* Desktop Navigation */}
@@ -89,11 +77,10 @@ const Header = () => {
                 <DropdownMenu key={link.name}>
                   <DropdownMenuTrigger asChild>
                     <button
-                      className={`flex items-center gap-1 px-4 py-2 text-sm font-medium transition-colors ${
-                        isActive(link.path)
+                      className={`flex items-center gap-1 px-4 py-2 text-sm font-medium transition-colors ${isActive(link.path)
                           ? "text-golden"
                           : "text-white/90 hover:text-golden"
-                      }`}
+                        }`}
                     >
                       {link.name}
                       <ChevronDown className="w-4 h-4" />
@@ -123,11 +110,10 @@ const Header = () => {
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`px-4 py-2 text-sm font-medium transition-colors ${
-                    isActive(link.path)
+                  className={`px-4 py-2 text-sm font-medium transition-colors ${isActive(link.path)
                       ? "text-golden"
                       : "text-white/90 hover:text-golden"
-                  }`}
+                    }`}
                 >
                   {link.name}
                 </Link>
@@ -225,9 +211,8 @@ const Header = () => {
                     <Link
                       to={link.path}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className={`block px-4 py-3 ${
-                        isActive(link.path) ? "text-golden" : "text-white/90"
-                      }`}
+                      className={`block px-4 py-3 ${isActive(link.path) ? "text-golden" : "text-white/90"
+                        }`}
                     >
                       {link.name}
                     </Link>
