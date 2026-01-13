@@ -50,9 +50,10 @@ const PageManager = () => {
         setLoading(true);
         try {
             const { data } = await api.get("/pages");
-            setPages(data);
+            setPages(Array.isArray(data) ? data : []);
         } catch (error) {
             toast.error("Failed to fetch pages");
+            setPages([]);
         } finally {
             setLoading(false);
         }
@@ -266,10 +267,10 @@ const PageManager = () => {
         );
     };
 
-    const filteredPages = pages.filter(page =>
+    const filteredPages = Array.isArray(pages) ? pages.filter(page =>
         page.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         page.slug.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    ) : [];
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-10">
