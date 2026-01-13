@@ -59,15 +59,15 @@ const Header = () => {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-          ? "bg-secondary/95 backdrop-blur-md shadow-lg"
-          : "bg-secondary"
+        ? "bg-secondary/95 backdrop-blur-md shadow-lg"
+        : "bg-secondary"
         }`}
     >
       <div className="container-custom">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <img src="/sitelogo.png" alt="NJR EXIM" className="h-16 w-auto object-contain" />
+            <img src="/sitelogo.png" alt="NJR EXIM" className="h-10 w-auto object-contain" />
           </Link>
 
           {/* Desktop Navigation */}
@@ -78,8 +78,8 @@ const Header = () => {
                   <DropdownMenuTrigger asChild>
                     <button
                       className={`flex items-center gap-1 px-4 py-2 text-sm font-medium transition-colors ${isActive(link.path)
-                          ? "text-golden"
-                          : "text-white/90 hover:text-golden"
+                        ? "text-golden"
+                        : "text-white/90 hover:text-golden"
                         }`}
                     >
                       {link.name}
@@ -111,8 +111,8 @@ const Header = () => {
                   key={link.name}
                   to={link.path}
                   className={`px-4 py-2 text-sm font-medium transition-colors ${isActive(link.path)
-                      ? "text-golden"
-                      : "text-white/90 hover:text-golden"
+                    ? "text-golden"
+                    : "text-white/90 hover:text-golden"
                     }`}
                 >
                   {link.name}

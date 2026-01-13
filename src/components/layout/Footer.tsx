@@ -54,14 +54,7 @@ const Footer = () => {
           {/* Company Info */}
           <div className="space-y-6">
             <Link to="/" className="flex items-center gap-3 group">
-              <div className="relative">
-                <Globe className="w-10 h-10 text-golden" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xl font-bold text-white tracking-wider">
-                  NJR <span className="text-golden">EXIM</span>
-                </span>
-              </div>
+              <img src="/sitelogo.png" alt="NJR EXIM" className="h-14 w-auto object-contain brightness-0 invert opacity-90" />
             </Link>
             <p className="text-white/70 text-sm leading-relaxed">
               Your trusted partner in global trade. Delivering quality agricultural
