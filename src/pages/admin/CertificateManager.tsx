@@ -149,94 +149,96 @@ const CertificateManager = () => {
                     </div>
                 </CardHeader>
                 <CardContent className="p-0">
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="bg-slate-50/50 hover:bg-slate-50/50 border-slate-100">
-                                <TableHead className="w-[80px] text-center">Type</TableHead>
-                                <TableHead className="font-bold text-slate-700">Certificate Detail</TableHead>
-                                <TableHead className="font-bold text-slate-700">Issuing Authority</TableHead>
-                                <TableHead className="text-right font-bold text-slate-700 px-6">Actions</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {loading ? (
-                                Array(3).fill(0).map((_, i) => (
-                                    <TableRow key={i} className="animate-pulse">
-                                        <TableCell><div className="w-10 h-10 bg-slate-100 rounded mx-auto"></div></TableCell>
-                                        <TableCell><div className="h-4 bg-slate-100 rounded w-48"></div></TableCell>
-                                        <TableCell><div className="h-4 bg-slate-100 rounded w-32"></div></TableCell>
-                                        <TableCell className="text-right"><div className="h-8 bg-slate-100 rounded-full w-8 ml-auto"></div></TableCell>
-                                    </TableRow>
-                                ))
-                            ) : filteredCertificates.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={4} className="h-64 text-center">
-                                        <div className="flex flex-col items-center justify-center text-slate-400">
-                                            <ShieldCheck size={48} className="mb-2 opacity-20" />
-                                            <p className="font-medium">No certificates found</p>
-                                            <p className="text-xs">Keep your credibility high by uploading your certifications.</p>
-                                        </div>
-                                    </TableCell>
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow className="bg-slate-50/50 hover:bg-slate-50/50 border-slate-100">
+                                    <TableHead className="w-[80px] text-center">Type</TableHead>
+                                    <TableHead className="font-bold text-slate-700">Certificate Detail</TableHead>
+                                    <TableHead className="hidden md:table-cell font-bold text-slate-700">Issuing Authority</TableHead>
+                                    <TableHead className="text-right font-bold text-slate-700 px-6">Actions</TableHead>
                                 </TableRow>
-                            ) : (
-                                filteredCertificates.map((cert) => (
-                                    <TableRow key={cert._id} className="group hover:bg-slate-50/80 transition-colors border-slate-50">
-                                        <TableCell className="text-center">
-                                            <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 border border-indigo-100 mx-auto">
-                                                <FileText size={18} />
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex flex-col gap-0.5">
-                                                <span className="font-bold text-slate-800 group-hover:text-primary transition-colors">{cert.title}</span>
-                                                <a
-                                                    href={cert.fileUrl}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                    className="text-[11px] text-indigo-500 hover:text-indigo-700 hover:underline flex items-center font-medium"
-                                                >
-                                                    View Source File <ExternalLink size={10} className="ml-1" />
-                                                </a>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center gap-2 text-slate-600 font-medium">
-                                                <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                                                {cert.issuer}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-right px-6">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-primary hover:bg-primary/10" asChild title="View Document">
-                                                    <a href={cert.fileUrl} target="_blank" rel="noreferrer">
-                                                        <Eye size={16} />
-                                                    </a>
-                                                </Button>
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-200">
-                                                            <MoreVertical className="h-4 w-4 text-slate-500" />
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end" className="w-48">
-                                                        <DropdownMenuItem asChild className="cursor-pointer">
-                                                            <a href={cert.fileUrl} target="_blank" rel="noreferrer">
-                                                                <Download className="mr-2 h-4 w-4" /> Download Document
-                                                            </a>
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuSeparator />
-                                                        <DropdownMenuItem onClick={() => handleDelete(cert._id)} className="cursor-pointer text-red-600 focus:text-red-700 focus:bg-red-50">
-                                                            <Trash className="mr-2 h-4 w-4" /> Remove Certificate
-                                                        </DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
+                            </TableHeader>
+                            <TableBody>
+                                {loading ? (
+                                    Array(3).fill(0).map((_, i) => (
+                                        <TableRow key={i} className="animate-pulse">
+                                            <TableCell><div className="w-10 h-10 bg-slate-100 rounded mx-auto"></div></TableCell>
+                                            <TableCell><div className="h-4 bg-slate-100 rounded w-48"></div></TableCell>
+                                            <TableCell className="hidden md:table-cell"><div className="h-4 bg-slate-100 rounded w-32"></div></TableCell>
+                                            <TableCell className="text-right"><div className="h-8 bg-slate-100 rounded-full w-8 ml-auto"></div></TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : filteredCertificates.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={4} className="h-64 text-center">
+                                            <div className="flex flex-col items-center justify-center text-slate-400">
+                                                <ShieldCheck size={48} className="mb-2 opacity-20" />
+                                                <p className="font-medium">No certificates found</p>
+                                                <p className="text-xs">Keep your credibility high by uploading your certifications.</p>
                                             </div>
                                         </TableCell>
                                     </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
+                                ) : (
+                                    filteredCertificates.map((cert) => (
+                                        <TableRow key={cert._id} className="group hover:bg-slate-50/80 transition-colors border-slate-50">
+                                            <TableCell className="text-center">
+                                                <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 border border-indigo-100 mx-auto">
+                                                    <FileText size={18} />
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex flex-col gap-0.5">
+                                                    <span className="font-bold text-slate-800 group-hover:text-primary transition-colors">{cert.title}</span>
+                                                    <a
+                                                        href={cert.fileUrl}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        className="text-[11px] text-indigo-500 hover:text-indigo-700 hover:underline flex items-center font-medium"
+                                                    >
+                                                        View Source File <ExternalLink size={10} className="ml-1" />
+                                                    </a>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                                <div className="flex items-center gap-2 text-slate-600 font-medium">
+                                                    <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                                                    {cert.issuer}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="text-right px-6">
+                                                <div className="flex items-center justify-end gap-2">
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-primary hover:bg-primary/10" asChild title="View Document">
+                                                        <a href={cert.fileUrl} target="_blank" rel="noreferrer">
+                                                            <Eye size={16} />
+                                                        </a>
+                                                    </Button>
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-200">
+                                                                <MoreVertical className="h-4 w-4 text-slate-500" />
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="end" className="w-48">
+                                                            <DropdownMenuItem asChild className="cursor-pointer">
+                                                                <a href={cert.fileUrl} target="_blank" rel="noreferrer">
+                                                                    <Download className="mr-2 h-4 w-4" /> Download Document
+                                                                </a>
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuSeparator />
+                                                            <DropdownMenuItem onClick={() => handleDelete(cert._id)} className="cursor-pointer text-red-600 focus:text-red-700 focus:bg-red-50">
+                                                                <Trash className="mr-2 h-4 w-4" /> Remove Certificate
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </CardContent>
             </Card>
 

@@ -187,97 +187,99 @@ const BlogManager = () => {
                     </div>
                 </CardHeader>
                 <CardContent className="p-0">
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="bg-slate-50/50 hover:bg-slate-50/50 border-slate-100">
-                                <TableHead className="w-[100px] font-bold text-slate-700">Preview</TableHead>
-                                <TableHead className="font-bold text-slate-700">Post Details</TableHead>
-                                <TableHead className="font-bold text-slate-700">Status</TableHead>
-                                <TableHead className="font-bold text-slate-700">Date</TableHead>
-                                <TableHead className="text-right font-bold text-slate-700 px-6">Actions</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {loading ? (
-                                Array(5).fill(0).map((_, i) => (
-                                    <TableRow key={i} className="animate-pulse">
-                                        <TableCell><div className="w-12 h-12 bg-slate-100 rounded"></div></TableCell>
-                                        <TableCell><div className="h-4 bg-slate-100 rounded w-3/4"></div></TableCell>
-                                        <TableCell><div className="h-6 bg-slate-100 rounded w-16"></div></TableCell>
-                                        <TableCell><div className="h-4 bg-slate-100 rounded w-24"></div></TableCell>
-                                        <TableCell className="text-right"><div className="h-8 bg-slate-100 rounded-full w-8 ml-auto"></div></TableCell>
-                                    </TableRow>
-                                ))
-                            ) : filteredBlogs.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={5} className="h-64 text-center">
-                                        <div className="flex flex-col items-center justify-center text-slate-400">
-                                            <FileText size={48} className="mb-2 opacity-20" />
-                                            <p className="font-medium">No blog posts found</p>
-                                            <p className="text-xs">Try adjusting your search or add a new post.</p>
-                                        </div>
-                                    </TableCell>
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow className="bg-slate-50/50 hover:bg-slate-50/50 border-slate-100">
+                                    <TableHead className="w-[100px] font-bold text-slate-700">Preview</TableHead>
+                                    <TableHead className="font-bold text-slate-700">Post Details</TableHead>
+                                    <TableHead className="hidden md:table-cell font-bold text-slate-700">Status</TableHead>
+                                    <TableHead className="hidden md:table-cell font-bold text-slate-700">Date</TableHead>
+                                    <TableHead className="text-right font-bold text-slate-700 px-6">Actions</TableHead>
                                 </TableRow>
-                            ) : (
-                                filteredBlogs.map((blog) => (
-                                    <TableRow key={blog._id} className="group hover:bg-slate-50/80 transition-colors border-slate-50">
-                                        <TableCell>
-                                            <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-slate-100 bg-slate-50 shadow-sm">
-                                                {blog.image ? (
-                                                    <img src={blog.image} alt={blog.title} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-slate-300">
-                                                        <ImageIcon size={20} />
-                                                    </div>
-                                                )}
+                            </TableHeader>
+                            <TableBody>
+                                {loading ? (
+                                    Array(5).fill(0).map((_, i) => (
+                                        <TableRow key={i} className="animate-pulse">
+                                            <TableCell><div className="w-12 h-12 bg-slate-100 rounded"></div></TableCell>
+                                            <TableCell><div className="h-4 bg-slate-100 rounded w-3/4"></div></TableCell>
+                                            <TableCell className="hidden md:table-cell"><div className="h-6 bg-slate-100 rounded w-16"></div></TableCell>
+                                            <TableCell className="hidden md:table-cell"><div className="h-4 bg-slate-100 rounded w-24"></div></TableCell>
+                                            <TableCell className="text-right"><div className="h-8 bg-slate-100 rounded-full w-8 ml-auto"></div></TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : filteredBlogs.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} className="h-64 text-center">
+                                            <div className="flex flex-col items-center justify-center text-slate-400">
+                                                <FileText size={48} className="mb-2 opacity-20" />
+                                                <p className="font-medium">No blog posts found</p>
+                                                <p className="text-xs">Try adjusting your search or add a new post.</p>
                                             </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex flex-col gap-0.5 max-w-[400px]">
-                                                <span className="font-bold text-slate-800 line-clamp-1 group-hover:text-primary transition-colors">{blog.title}</span>
-                                                <span className="text-xs text-slate-400 line-clamp-1">{blog.content ? blog.content.substring(0, 100).replace(/<[^>]*>?/gm, '') : ''}...</span>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant={blog.isPublished ? "default" : "secondary"} className={cn(
-                                                "font-medium px-2 py-0.5 h-auto",
-                                                blog.isPublished ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-emerald-100" : "bg-slate-100 text-slate-600 hover:bg-slate-200 border-slate-200"
-                                            )}>
-                                                {blog.isPublished ? "Published" : "Draft"}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center gap-1.5 text-slate-500 text-xs font-medium">
-                                                <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                                                {new Date(blog.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-right px-6">
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-200 text-slate-400 hover:text-slate-600">
-                                                        <MoreVertical className="h-4 w-4" />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end" className="w-40">
-                                                    <DropdownMenuItem onClick={() => handleOpenDialog(blog)} className="cursor-pointer">
-                                                        <Edit className="mr-2 h-4 w-4" /> Edit Post
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem className="cursor-pointer text-primary focus:text-primary/90">
-                                                        <ExternalLink className="mr-2 h-4 w-4" /> View Live
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuSeparator />
-                                                    <DropdownMenuItem onClick={() => handleDelete(blog._id)} className="cursor-pointer text-red-600 focus:text-red-700 focus:bg-red-50">
-                                                        <Trash className="mr-2 h-4 w-4" /> Delete Post
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
                                         </TableCell>
                                     </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
+                                ) : (
+                                    filteredBlogs.map((blog) => (
+                                        <TableRow key={blog._id} className="group hover:bg-slate-50/80 transition-colors border-slate-50">
+                                            <TableCell>
+                                                <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-slate-100 bg-slate-50 shadow-sm">
+                                                    {blog.image ? (
+                                                        <img src={blog.image} alt={blog.title} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-slate-300">
+                                                            <ImageIcon size={20} />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex flex-col gap-0.5 max-w-[400px]">
+                                                    <span className="font-bold text-slate-800 line-clamp-1 group-hover:text-primary transition-colors">{blog.title}</span>
+                                                    <span className="text-xs text-slate-400 line-clamp-1">{blog.content ? blog.content.substring(0, 100).replace(/<[^>]*>?/gm, '') : ''}...</span>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                                <Badge variant={blog.isPublished ? "default" : "secondary"} className={cn(
+                                                    "font-medium px-2 py-0.5 h-auto",
+                                                    blog.isPublished ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-emerald-100" : "bg-slate-100 text-slate-600 hover:bg-slate-200 border-slate-200"
+                                                )}>
+                                                    {blog.isPublished ? "Published" : "Draft"}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                                <div className="flex items-center gap-1.5 text-slate-500 text-xs font-medium">
+                                                    <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                                                    {new Date(blog.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="text-right px-6">
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-200 text-slate-400 hover:text-slate-600">
+                                                            <MoreVertical className="h-4 w-4" />
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end" className="w-40">
+                                                        <DropdownMenuItem onClick={() => handleOpenDialog(blog)} className="cursor-pointer">
+                                                            <Edit className="mr-2 h-4 w-4" /> Edit Post
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem className="cursor-pointer text-primary focus:text-primary/90">
+                                                            <ExternalLink className="mr-2 h-4 w-4" /> View Live
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem onClick={() => handleDelete(blog._id)} className="cursor-pointer text-red-600 focus:text-red-700 focus:bg-red-50">
+                                                            <Trash className="mr-2 h-4 w-4" /> Delete Post
+                                                        </DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </CardContent>
             </Card>
 

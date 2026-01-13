@@ -35,6 +35,22 @@ const Index = () => {
 
   if (loading && !content) return <Loader />;
 
+  // Default fallbacks to prevent crashes
+  const heroContent = content?.hero || {
+    title: "Premium Indian Exports",
+    highlightedText: "Global Quality",
+    description: "Your trusted partner for premium agricultural products.",
+    buttonText: "Explore Products",
+    buttonLink: "/products"
+  };
+
+  const aboutContent = content?.aboutSection || {
+    badge: "About Us",
+    title: "Why Choose NJR Exim?",
+    description: "We are committed to delivering excellence in every shipment.",
+    stats: []
+  };
+
   return (
     <Layout>
       <SEO
@@ -42,8 +58,8 @@ const Index = () => {
         description="NJR EXIM is a leading international exporter specializing in premium Indian agricultural products like Rice, Spices, Fruits, and Vegetables. Quality guaranteed."
         canonical="/"
       />
-      <HeroSection content={content?.hero} />
-      <AboutSection content={content?.aboutSection} />
+      <HeroSection content={heroContent} />
+      <AboutSection content={aboutContent} />
       <ProductsSection />
       <FeaturesSection />
       <WhyUsSection />

@@ -173,104 +173,106 @@ const UserManagement = () => {
                     </div>
                 </CardHeader>
                 <CardContent className="p-0">
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="bg-slate-50/50 hover:bg-slate-50/50 border-slate-100">
-                                <TableHead className="w-[60px]"></TableHead>
-                                <TableHead className="font-bold text-slate-700">Administrator</TableHead>
-                                <TableHead className="font-bold text-slate-700">Email Address</TableHead>
-                                <TableHead className="font-bold text-slate-700">Access Level</TableHead>
-                                <TableHead className="text-right font-bold text-slate-700 px-6">Control</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {loading ? (
-                                Array(3).fill(0).map((_, i) => (
-                                    <TableRow key={i} className="animate-pulse">
-                                        <TableCell><div className="w-10 h-10 bg-slate-100 rounded-full mx-auto"></div></TableCell>
-                                        <TableCell><div className="h-4 bg-slate-100 rounded w-32"></div></TableCell>
-                                        <TableCell><div className="h-4 bg-slate-100 rounded w-48"></div></TableCell>
-                                        <TableCell><div className="h-4 bg-slate-100 rounded w-20"></div></TableCell>
-                                        <TableCell className="text-right"><div className="h-8 bg-slate-100 rounded-full w-8 ml-auto"></div></TableCell>
-                                    </TableRow>
-                                ))
-                            ) : filteredUsers.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={5} className="h-64 text-center">
-                                        <div className="flex flex-col items-center justify-center text-slate-400">
-                                            <Users size={48} className="mb-2 opacity-20" />
-                                            <p className="font-medium">No users found</p>
-                                            <p className="text-xs">Try a different search term.</p>
-                                        </div>
-                                    </TableCell>
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow className="bg-slate-50/50 hover:bg-slate-50/50 border-slate-100">
+                                    <TableHead className="w-[60px]"></TableHead>
+                                    <TableHead className="font-bold text-slate-700">Administrator</TableHead>
+                                    <TableHead className="hidden md:table-cell font-bold text-slate-700">Email Address</TableHead>
+                                    <TableHead className="font-bold text-slate-700">Access Level</TableHead>
+                                    <TableHead className="text-right font-bold text-slate-700 px-6">Control</TableHead>
                                 </TableRow>
-                            ) : (
-                                filteredUsers.map((user) => (
-                                    <TableRow key={user._id} className="group hover:bg-slate-50/80 transition-colors border-slate-50">
-                                        <TableCell>
-                                            <div className={cn(
-                                                "w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ring-2 ring-white shadow-sm mx-auto",
-                                                user.role === 'super-admin'
-                                                    ? "bg-primary text-white"
-                                                    : "bg-slate-200 text-slate-600"
-                                            )}>
-                                                {user.name.charAt(0).toUpperCase()}
+                            </TableHeader>
+                            <TableBody>
+                                {loading ? (
+                                    Array(3).fill(0).map((_, i) => (
+                                        <TableRow key={i} className="animate-pulse">
+                                            <TableCell><div className="w-10 h-10 bg-slate-100 rounded-full mx-auto"></div></TableCell>
+                                            <TableCell><div className="h-4 bg-slate-100 rounded w-32"></div></TableCell>
+                                            <TableCell className="hidden md:table-cell"><div className="h-4 bg-slate-100 rounded w-48"></div></TableCell>
+                                            <TableCell><div className="h-4 bg-slate-100 rounded w-20"></div></TableCell>
+                                            <TableCell className="text-right"><div className="h-8 bg-slate-100 rounded-full w-8 ml-auto"></div></TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : filteredUsers.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} className="h-64 text-center">
+                                            <div className="flex flex-col items-center justify-center text-slate-400">
+                                                <Users size={48} className="mb-2 opacity-20" />
+                                                <p className="font-medium">No users found</p>
+                                                <p className="text-xs">Try a different search term.</p>
                                             </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <span className="font-bold text-slate-900">{user.name}</span>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="text-slate-500 font-medium flex items-center gap-2 text-sm">
-                                                <Mail className="w-3.5 h-3.5 text-slate-400" />
-                                                {user.email}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge
-                                                variant="outline"
-                                                className={cn(
-                                                    "font-bold px-2.5 py-0.5 h-6 text-[10px] uppercase border tracking-wider",
-                                                    user.role === 'super-admin'
-                                                        ? "bg-primary/10 text-primary border-primary/20"
-                                                        : "bg-slate-100 text-slate-600 border-slate-200"
-                                                )}
-                                            >
-                                                {user.role === 'super-admin' ? (
-                                                    <ShieldCheck className="w-3 h-3 mr-1.5" />
-                                                ) : (
-                                                    <ShieldAlert className="w-3 h-3 mr-1.5 opacity-50" />
-                                                )}
-                                                {user.role}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="text-right px-6">
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-200 text-slate-400 hover:text-slate-600">
-                                                        <MoreVertical className="h-4 w-4" />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end" className="w-48">
-                                                    <DropdownMenuItem onClick={() => handleOpenDialog(user)} className="cursor-pointer font-medium">
-                                                        <Edit className="mr-2 h-4 w-4 text-slate-400" /> Edit Permissions
-                                                    </DropdownMenuItem>
-                                                    {user.role !== 'super-admin' && (
-                                                        <>
-                                                            <DropdownMenuSeparator />
-                                                            <DropdownMenuItem onClick={() => handleDelete(user._id)} className="cursor-pointer text-red-600 focus:text-red-700 focus:bg-red-50 font-medium">
-                                                                <Trash className="mr-2 h-4 w-4" /> Revoke Access
-                                                            </DropdownMenuItem>
-                                                        </>
-                                                    )}
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
                                         </TableCell>
                                     </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
+                                ) : (
+                                    filteredUsers.map((user) => (
+                                        <TableRow key={user._id} className="group hover:bg-slate-50/80 transition-colors border-slate-50">
+                                            <TableCell>
+                                                <div className={cn(
+                                                    "w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ring-2 ring-white shadow-sm mx-auto",
+                                                    user.role === 'super-admin'
+                                                        ? "bg-primary text-white"
+                                                        : "bg-slate-200 text-slate-600"
+                                                )}>
+                                                    {user.name.charAt(0).toUpperCase()}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <span className="font-bold text-slate-900">{user.name}</span>
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                                <div className="text-slate-500 font-medium flex items-center gap-2 text-sm">
+                                                    <Mail className="w-3.5 h-3.5 text-slate-400" />
+                                                    {user.email}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Badge
+                                                    variant="outline"
+                                                    className={cn(
+                                                        "font-bold px-2.5 py-0.5 h-6 text-[10px] uppercase border tracking-wider",
+                                                        user.role === 'super-admin'
+                                                            ? "bg-primary/10 text-primary border-primary/20"
+                                                            : "bg-slate-100 text-slate-600 border-slate-200"
+                                                    )}
+                                                >
+                                                    {user.role === 'super-admin' ? (
+                                                        <ShieldCheck className="w-3 h-3 mr-1.5" />
+                                                    ) : (
+                                                        <ShieldAlert className="w-3 h-3 mr-1.5 opacity-50" />
+                                                    )}
+                                                    {user.role}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell className="text-right px-6">
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-200 text-slate-400 hover:text-slate-600">
+                                                            <MoreVertical className="h-4 w-4" />
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end" className="w-48">
+                                                        <DropdownMenuItem onClick={() => handleOpenDialog(user)} className="cursor-pointer font-medium">
+                                                            <Edit className="mr-2 h-4 w-4 text-slate-400" /> Edit Permissions
+                                                        </DropdownMenuItem>
+                                                        {user.role !== 'super-admin' && (
+                                                            <>
+                                                                <DropdownMenuSeparator />
+                                                                <DropdownMenuItem onClick={() => handleDelete(user._id)} className="cursor-pointer text-red-600 focus:text-red-700 focus:bg-red-50 font-medium">
+                                                                    <Trash className="mr-2 h-4 w-4" /> Revoke Access
+                                                                </DropdownMenuItem>
+                                                            </>
+                                                        )}
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </CardContent>
             </Card>
 

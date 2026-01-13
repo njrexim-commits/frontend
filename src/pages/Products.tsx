@@ -91,8 +91,8 @@ const Products = () => {
     const fetchData = async () => {
       try {
         const [productsData, pageData] = await Promise.all([
-          api.get("/products"),
-          api.get("/pages/products")
+          api.get("/products").catch(err => ({ data: [] })),
+          api.get("/pages/products").catch(err => ({ data: { content: null } }))
         ]);
         const { data } = productsData;
         if (data && data.length > 0) {

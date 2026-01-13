@@ -23,11 +23,12 @@ import { toast } from "sonner";
 import {
     Edit3, Globe, Save, Layers, Search, LayoutTemplate,
     ChevronRight, Image as ImageIcon, Type, List, CheckCircle2,
-    Plus, Trash2, GripVertical, Eye, ArrowLeft
+    Plus, Trash2, GripVertical, Eye, ArrowLeft, UploadCloud
 } from "lucide-react";
 import api from "@/lib/api";
 import { cn } from "@/lib/utils";
 import StatsCard from "@/components/admin/StatsCard";
+import ImageSelector from "@/components/admin/ImageSelector";
 
 interface Page {
     _id: string;
@@ -35,6 +36,13 @@ interface Page {
     slug: string;
     content: Record<string, any>;
     isActive: boolean;
+}
+
+interface ImageFieldState {
+    section: string;
+    key: string;
+    index?: number;
+    subField?: string;
 }
 
 const PageManager = () => {
@@ -45,6 +53,10 @@ const PageManager = () => {
     const [pageContent, setPageContent] = useState<Record<string, any> | null>(null);
     const [activeSection, setActiveSection] = useState<string>("");
     const [searchQuery, setSearchQuery] = useState("");
+
+    // Image Selector State
+    const [showImageSelector, setShowImageSelector] = useState(false);
+    const [activeImageField, setActiveImageField] = useState<ImageFieldState | null>(null);
 
     const fetchPages = async () => {
         setLoading(true);
@@ -111,7 +123,26 @@ const PageManager = () => {
             newContent[section][field].splice(index, 1);
         }
         setPageContent(newContent);
-    }
+    };
+
+    const openImageSelector = (section: string, key: string, index?: number, subField?: string) => {
+        setActiveImageField({ section, key, index, subField });
+        setShowImageSelector(true);
+    };
+
+    const handleImageSelect = (url: string) => {
+        if (activeImageField) {
+            handleUpdateContent(
+                activeImageField.section,
+                activeImageField.key,
+                url,
+                activeImageField.index,
+                activeImageField.subField
+            );
+        }
+        setShowImageSelector(false);
+        setActiveImageField(null);
+    };
 
     const handleSubmit = async () => {
         try {
@@ -135,7 +166,7 @@ const PageManager = () => {
     };
 
     const renderField = (section: string, key: string, value: any, index?: number) => {
-        const isImage = key.toLowerCase().includes('image') || key.toLowerCase().includes('src') || key.toLowerCase().includes('url');
+        const isImage = key.toLowerCase().includes('image') || key.toLowerCase().includes('src') || key.toLowerCase().includes('url') || key.toLowerCase().includes('img');
         const isLongText = typeof value === 'string' && (value.length > 50 || key.toLowerCase().includes('description') || key.toLowerCase().includes('content') || key.toLowerCase().includes('bio'));
         const label = formatLabel(key);
 
@@ -154,24 +185,48 @@ const PageManager = () => {
         if (isImage) {
             return (
                 <div key={`${section}-${key}-${index}`} className="space-y-3">
-                    <Label className="text-xs font-bold uppercase tracking-widest text-slate-500 flex items-center gap-2">
-                        <ImageIcon className="w-3.5 h-3.5" />
-                        {label}
-                    </Label>
-                    <div className="flex gap-4 items-start">
-                        {value && (
-                            <div className="w-24 h-24 rounded-lg border border-slate-200 bg-slate-50 shrink-0 overflow-hidden relative group">
-                                <img src={value} alt="Preview" className="w-full h-full object-cover" />
+                    <div className="flex items-center justify-between">
+                        <Label className="text-xs font-bold uppercase tracking-widest text-slate-500 flex items-center gap-2">
+                            <ImageIcon className="w-3.5 h-3.5" />
+                            {label}
+                        </Label>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openImageSelector(section, key, index)}
+                            className="h-6 text-[10px] uppercase font-bold tracking-wider"
+                        >
+                            <UploadCloud className="w-3 h-3 mr-1.5" />
+                            Change Image
+                        </Button>
+                    </div>
+
+                    <div className="flex gap-4 items-start p-3 bg-slate-50/50 rounded-xl border border-slate-100 group hover:border-primary/20 transition-all">
+                        {value ? (
+                            <div className="w-24 h-24 rounded-lg border border-slate-200 bg-white shrink-0 overflow-hidden relative cursor-pointer" onClick={() => openImageSelector(section, key, index)}>
+                                <img src={value} alt="Preview" className="w-full h-full object-cover transition-transform group-hover:scale-105" />
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <Edit3 className="text-white w-5 h-5" />
+                                </div>
+                            </div>
+                        ) : (
+                            <div
+                                className="w-24 h-24 rounded-lg border-2 border-dashed border-slate-200 bg-slate-50 shrink-0 flex items-center justify-center cursor-pointer hover:border-primary/40 hover:bg-primary/5 transition-all"
+                                onClick={() => openImageSelector(section, key, index)}
+                            >
+                                <ImageIcon className="w-8 h-8 text-slate-300" />
                             </div>
                         )}
-                        <div className="flex-1 space-y-2">
+                        <div className="flex-1 space-y-2 pt-1">
                             <Input
                                 value={value}
                                 onChange={(e) => handleUpdateContent(section, key, e.target.value, index)}
-                                className="font-mono text-xs bg-slate-50"
+                                className="font-mono text-xs bg-white h-8"
                                 placeholder="Image URL (https://...)"
                             />
-                            <p className="text-[10px] text-slate-400">Paste a direct image link from your upload manager.</p>
+                            <p className="text-[10px] text-slate-400">
+                                Select from gallery or paste a direct URL.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -198,7 +253,7 @@ const PageManager = () => {
 
                     <div className="space-y-3 pl-2 border-l-2 border-slate-100">
                         {value.map((item, idx) => (
-                            <div key={idx} className="relative group bg-slate-50/50 p-3 rounded-lg border border-slate-100 hover:border-slate-200 transition-colors">
+                            <div key={idx} className="relative group bg-slate-50/50 p-4 rounded-xl border border-slate-100 hover:border-slate-200 transition-colors shadow-sm">
                                 <Button
                                     variant="ghost"
                                     size="icon"
@@ -210,24 +265,60 @@ const PageManager = () => {
 
                                 {typeof item === 'object' ? (
                                     <div className="space-y-3 pr-8">
-                                        {Object.entries(item).map(([subKey, subValue]) => (
-                                            <div key={`${section}-${key}-${idx}-${subKey}`}>
-                                                <Label className="text-[10px] font-bold text-slate-400 mb-1 block">{formatLabel(subKey)}</Label>
-                                                {subKey.toLowerCase().includes('description') ? (
-                                                    <Textarea
-                                                        value={subValue as string}
-                                                        onChange={(e) => handleUpdateContent(section, key, e.target.value, idx, subKey)}
-                                                        className="h-20 text-xs bg-white"
-                                                    />
-                                                ) : (
-                                                    <Input
-                                                        value={subValue as string}
-                                                        onChange={(e) => handleUpdateContent(section, key, e.target.value, idx, subKey)}
-                                                        className="h-8 text-xs bg-white"
-                                                    />
-                                                )}
-                                            </div>
-                                        ))}
+                                        {Object.entries(item).map(([subKey, subValue]) => {
+                                            const isSubImage = subKey.toLowerCase().includes('image') || subKey.toLowerCase().includes('src');
+
+                                            if (isSubImage) {
+                                                // Special handling for images inside arrays (e.g. features list icons)
+                                                return (
+                                                    <div key={`${section}-${key}-${idx}-${subKey}`} className="space-y-1.5">
+                                                        <div className="flex items-center justify-between">
+                                                            <Label className="text-[10px] font-bold text-slate-400 block">{formatLabel(subKey)}</Label>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                className="h-5 text-[10px] px-2 text-primary hover:bg-primary/5"
+                                                                onClick={() => openImageSelector(section, key, idx, subKey)}
+                                                            >
+                                                                Select
+                                                            </Button>
+                                                        </div>
+                                                        <div className="flex gap-2">
+                                                            {subValue && (
+                                                                <div className="w-8 h-8 rounded border border-slate-200 bg-white shrink-0">
+                                                                    <img src={subValue as string} className="w-full h-full object-cover rounded" />
+                                                                </div>
+                                                            )}
+                                                            <Input
+                                                                value={subValue as string}
+                                                                onChange={(e) => handleUpdateContent(section, key, e.target.value, idx, subKey)}
+                                                                className="h-8 text-xs bg-white flex-1"
+                                                                placeholder="Image URL"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                );
+                                            }
+
+                                            return (
+                                                <div key={`${section}-${key}-${idx}-${subKey}`}>
+                                                    <Label className="text-[10px] font-bold text-slate-400 mb-1 block">{formatLabel(subKey)}</Label>
+                                                    {subKey.toLowerCase().includes('description') ? (
+                                                        <Textarea
+                                                            value={subValue as string}
+                                                            onChange={(e) => handleUpdateContent(section, key, e.target.value, idx, subKey)}
+                                                            className="h-20 text-xs bg-white resize-none"
+                                                        />
+                                                    ) : (
+                                                        <Input
+                                                            value={subValue as string}
+                                                            onChange={(e) => handleUpdateContent(section, key, e.target.value, idx, subKey)}
+                                                            className="h-8 text-xs bg-white"
+                                                        />
+                                                    )}
+                                                </div>
+                                            )
+                                        })}
                                     </div>
                                 ) : (
                                     <Input
@@ -456,6 +547,12 @@ const PageManager = () => {
                     </div>
                 </DialogContent>
             </Dialog>
+
+            <ImageSelector
+                open={showImageSelector}
+                onOpenChange={setShowImageSelector}
+                onSelect={handleImageSelect}
+            />
         </div>
     );
 };

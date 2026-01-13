@@ -206,122 +206,125 @@ const InquiryManager = () => {
                     </div>
                 </CardHeader>
                 <CardContent className="p-0">
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="bg-slate-50/50 hover:bg-slate-50/50 border-slate-100">
-                                <TableHead className="font-bold text-slate-700 w-[250px]">Sender Details</TableHead>
-                                <TableHead className="font-bold text-slate-700">Subject/Message</TableHead>
-                                <TableHead className="font-bold text-slate-700 w-[120px]">Status</TableHead>
-                                <TableHead className="font-bold text-slate-700 w-[150px]">Received</TableHead>
-                                <TableHead className="text-right font-bold text-slate-700 px-6 w-[80px]">Actions</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {loading ? (
-                                Array(5).fill(0).map((_, i) => (
-                                    <TableRow key={i} className="animate-pulse">
-                                        <TableCell><div className="h-10 bg-slate-100 rounded w-40"></div></TableCell>
-                                        <TableCell><div className="h-10 bg-slate-100 rounded w-full"></div></TableCell>
-                                        <TableCell><div className="h-6 bg-slate-100 rounded w-20"></div></TableCell>
-                                        <TableCell><div className="h-4 bg-slate-100 rounded w-24"></div></TableCell>
-                                        <TableCell className="text-right"><div className="h-8 bg-slate-100 rounded-full w-8 ml-auto"></div></TableCell>
-                                    </TableRow>
-                                ))
-                            ) : filteredInquiries.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={5} className="h-64 text-center">
-                                        <div className="flex flex-col items-center justify-center text-slate-400">
-                                            <Inbox size={48} className="mb-2 opacity-20" />
-                                            <p className="font-medium">No inquiries found</p>
-                                            <p className="text-xs max-w-[200px] mt-1">Your inbox is clean for now or no messages match your search.</p>
-                                        </div>
-                                    </TableCell>
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow className="bg-slate-50/50 hover:bg-slate-50/50 border-slate-100">
+                                    <TableHead className="w-[80px] text-center">Icon</TableHead>
+                                    <TableHead className="font-bold text-slate-700">Sender Info</TableHead>
+                                    <TableHead className="hidden md:table-cell font-bold text-slate-700">Message Preview</TableHead>
+                                    <TableHead className="font-bold text-slate-700">Status</TableHead>
+                                    <TableHead className="hidden md:table-cell font-bold text-slate-700">Date</TableHead>
+                                    <TableHead className="text-right font-bold text-slate-700 px-6">Actions</TableHead>
                                 </TableRow>
-                            ) : (
-                                filteredInquiries.map((iq) => (
-                                    <TableRow
-                                        key={iq._id}
-                                        className={cn(
-                                            "group hover:bg-slate-50/80 transition-colors border-slate-50 cursor-pointer",
-                                            iq.status === 'new' ? "bg-primary/5" : ""
-                                        )}
-                                        onClick={() => handleViewInquiry(iq)}
-                                    >
-                                        <TableCell>
-                                            <div className="flex items-center gap-3">
-                                                <div className={cn(
-                                                    "w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs shadow-sm shrink-0 border",
-                                                    iq.status === 'new'
-                                                        ? "bg-primary text-white border-primary/20"
-                                                        : "bg-white text-slate-500 border-slate-200"
-                                                )}>
-                                                    {iq.name.charAt(0).toUpperCase()}
-                                                </div>
-                                                <div className="flex flex-col gap-0.5 min-w-0">
-                                                    <span className={cn("text-secondary truncate block max-w-[180px]", iq.status === 'new' ? "font-bold" : "font-medium")}>{iq.name}</span>
-                                                    <span className="text-[11px] text-slate-500 flex items-center gap-1 truncate max-w-[180px]">
-                                                        {iq.email}
-                                                    </span>
-                                                </div>
+                            </TableHeader>
+                            <TableBody>
+                                {loading ? (
+                                    Array(5).fill(0).map((_, i) => (
+                                        <TableRow key={i} className="animate-pulse">
+                                            <TableCell><div className="h-10 bg-slate-100 rounded w-40"></div></TableCell>
+                                            <TableCell className="hidden md:table-cell"><div className="h-4 bg-slate-100 rounded w-48"></div></TableCell>
+                                            <TableCell><div className="h-6 bg-slate-100 rounded w-16"></div></TableCell>
+                                            <TableCell className="hidden md:table-cell"><div className="h-4 bg-slate-100 rounded w-24"></div></TableCell>
+                                            <TableCell className="text-right"><div className="h-8 bg-slate-100 rounded-full w-8 ml-auto"></div></TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : filteredInquiries.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} className="h-64 text-center">
+                                            <div className="flex flex-col items-center justify-center text-slate-400">
+                                                <Inbox size={48} className="mb-2 opacity-20" />
+                                                <p className="font-medium">No inquiries found</p>
+                                                <p className="text-xs max-w-[200px] mt-1">Your inbox is clean for now or no messages match your search.</p>
                                             </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex flex-col gap-0.5 max-w-xl">
-                                                <span className={cn("text-slate-900 text-sm block truncate", iq.status === 'new' && "font-bold")}>{iq.subject || "(No Subject)"}</span>
-                                                <span className="text-xs text-slate-500 truncate block">{iq.message}</span>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline" className={cn("font-bold px-2 py-0.5 h-6 text-[10px] uppercase tracking-wider", getStatusStyles(iq.status))}>
-                                                {iq.status === 'new' && <div className="w-1.5 h-1.5 rounded-full bg-primary mr-1.5 animate-pulse" />}
-                                                {iq.status}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="text-slate-500 text-xs flex items-center gap-1.5 font-medium">
-                                                <Calendar className="w-3 h-3 text-slate-400" />
-                                                {new Date(iq.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-right px-6" onClick={(e) => e.stopPropagation()}>
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-200 text-slate-400 hover:text-slate-600">
-                                                        <MoreVertical className="h-4 w-4" />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end" className="w-48">
-                                                    <DropdownMenuItem onClick={() => handleViewInquiry(iq)} className="cursor-pointer font-medium">
-                                                        <Eye className="mr-2 h-4 w-4 text-slate-400" /> View Details
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuSeparator />
-                                                    {iq.status !== 'resolved' && (
-                                                        <DropdownMenuItem onClick={() => handleStatusChange(iq._id, 'resolved')} className="cursor-pointer text-emerald-600 focus:text-emerald-700 focus:bg-emerald-50 font-medium">
-                                                            <CheckCircle2 className="mr-2 h-4 w-4" /> Resolve Ticket
-                                                        </DropdownMenuItem>
-                                                    )}
-                                                    {iq.status !== 'read' && (
-                                                        <DropdownMenuItem onClick={() => handleStatusChange(iq._id, 'read')} className="cursor-pointer font-medium">
-                                                            <Clock className="mr-2 h-4 w-4 text-amber-500" /> Mark as Read
-                                                        </DropdownMenuItem>
-                                                    )}
-                                                    <DropdownMenuItem asChild className="cursor-pointer font-medium">
-                                                        <a href={`mailto:${iq.email}?subject=Re: ${iq.subject}`}>
-                                                            <Reply className="mr-2 h-4 w-4 text-blue-500" /> Reply via Email
-                                                        </a>
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuSeparator />
-                                                    <DropdownMenuItem onClick={() => handleDelete(iq._id)} className="cursor-pointer text-red-600 focus:text-red-700 focus:bg-red-50 font-medium">
-                                                        <Trash className="mr-2 h-4 w-4" /> Delete Record
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
                                         </TableCell>
                                     </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
+                                ) : (
+                                    filteredInquiries.map((iq) => (
+                                        <TableRow
+                                            key={iq._id}
+                                            className={cn(
+                                                "group hover:bg-slate-50/80 transition-colors border-slate-50 cursor-pointer",
+                                                iq.status === 'new' ? "bg-primary/5" : ""
+                                            )}
+                                            onClick={() => handleViewInquiry(iq)}
+                                        >
+                                            <TableCell>
+                                                <div className="flex items-center gap-3">
+                                                    <div className={cn(
+                                                        "w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs shadow-sm shrink-0 border",
+                                                        iq.status === 'new'
+                                                            ? "bg-primary text-white border-primary/20"
+                                                            : "bg-white text-slate-500 border-slate-200"
+                                                    )}>
+                                                        {iq.name.charAt(0).toUpperCase()}
+                                                    </div>
+                                                    <div className="flex flex-col gap-0.5 min-w-0">
+                                                        <span className={cn("text-secondary truncate block max-w-[180px]", iq.status === 'new' ? "font-bold" : "font-medium")}>{iq.name}</span>
+                                                        <span className="text-[11px] text-slate-500 flex items-center gap-1 truncate max-w-[180px]">
+                                                            {iq.email}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                                <div className="flex flex-col gap-0.5 max-w-xl">
+                                                    <span className={cn("text-slate-900 text-sm block truncate", iq.status === 'new' && "font-bold")}>{iq.subject || "(No Subject)"}</span>
+                                                    <span className="text-xs text-slate-500 truncate block">{iq.message}</span>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Badge variant="outline" className={cn("font-bold px-2 py-0.5 h-6 text-[10px] uppercase tracking-wider", getStatusStyles(iq.status))}>
+                                                    {iq.status === 'new' && <div className="w-1.5 h-1.5 rounded-full bg-primary mr-1.5 animate-pulse" />}
+                                                    {iq.status}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                                <div className="text-slate-500 text-xs flex items-center gap-1.5 font-medium">
+                                                    <Calendar className="w-3 h-3 text-slate-400" />
+                                                    {new Date(iq.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="text-right px-6" onClick={(e) => e.stopPropagation()}>
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-200 text-slate-400 hover:text-slate-600">
+                                                            <MoreVertical className="h-4 w-4" />
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end" className="w-48">
+                                                        <DropdownMenuItem onClick={() => handleViewInquiry(iq)} className="cursor-pointer font-medium">
+                                                            <Eye className="mr-2 h-4 w-4 text-slate-400" /> View Details
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuSeparator />
+                                                        {iq.status !== 'resolved' && (
+                                                            <DropdownMenuItem onClick={() => handleStatusChange(iq._id, 'resolved')} className="cursor-pointer text-emerald-600 focus:text-emerald-700 focus:bg-emerald-50 font-medium">
+                                                                <CheckCircle2 className="mr-2 h-4 w-4" /> Resolve Ticket
+                                                            </DropdownMenuItem>
+                                                        )}
+                                                        {iq.status !== 'read' && (
+                                                            <DropdownMenuItem onClick={() => handleStatusChange(iq._id, 'read')} className="cursor-pointer font-medium">
+                                                                <Clock className="mr-2 h-4 w-4 text-amber-500" /> Mark as Read
+                                                            </DropdownMenuItem>
+                                                        )}
+                                                        <DropdownMenuItem asChild className="cursor-pointer font-medium">
+                                                            <a href={`mailto:${iq.email}?subject=Re: ${iq.subject}`}>
+                                                                <Reply className="mr-2 h-4 w-4 text-blue-500" /> Reply via Email
+                                                            </a>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem onClick={() => handleDelete(iq._id)} className="cursor-pointer text-red-600 focus:text-red-700 focus:bg-red-50 font-medium">
+                                                            <Trash className="mr-2 h-4 w-4" /> Delete Record
+                                                        </DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </CardContent>
             </Card>
 

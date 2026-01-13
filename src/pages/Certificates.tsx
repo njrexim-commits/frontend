@@ -10,57 +10,14 @@ const Certificates = () => {
   const [pageContent, setPageContent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const defaultCertifications = [
-    {
-      icon: Award,
-      title: "FSSAI Certified",
-      description: "Food Safety and Standards Authority of India certification ensuring compliance with food safety regulations.",
-      number: "License No: 12345678901234",
-      validUntil: "Valid until: December 2026",
-    },
-    {
-      icon: Globe,
-      title: "IEC Certificate",
-      description: "Import Export Code issued by DGFT, Government of India, authorizing us for international trade operations.",
-      number: "IEC No: 1234567890",
-      validUntil: "Permanent",
-    },
-    {
-      icon: Shield,
-      title: "ISO 9001:2015",
-      description: "International standard for Quality Management System, demonstrating our commitment to consistent quality.",
-      number: "Certificate No: ISO-2023-12345",
-      validUntil: "Valid until: March 2026",
-    },
-    {
-      icon: FileCheck,
-      title: "APEDA Registration",
-      description: "Registered with Agricultural and Processed Food Products Export Development Authority for agricultural exports.",
-      number: "Registration No: APEDA/2023/12345",
-      validUntil: "Valid until: December 2025",
-    },
-    {
-      icon: CheckCircle,
-      title: "Phytosanitary Certificate",
-      description: "Plant quarantine certification issued for export of agricultural products to international markets.",
-      number: "Issued by: Department of Agriculture",
-      validUntil: "Per Shipment Basis",
-    },
-    {
-      icon: Shield,
-      title: "HACCP Certified",
-      description: "Hazard Analysis and Critical Control Points certification for food safety management system.",
-      number: "Certificate No: HACCP-2023-6789",
-      validUntil: "Valid until: June 2026",
-    },
-  ];
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [certsData, pageData] = await Promise.all([
-          api.get("/certificates"),
-          api.get("/pages/certificates")
+          api.get("/certificates").catch(err => ({ data: [] })),
+          api.get("/pages/certificates").catch(err => ({ data: { content: null } }))
         ]);
         const { data } = certsData;
         if (data && data.length > 0) {
@@ -73,12 +30,14 @@ const Certificates = () => {
           }));
           setCertifications(formattedCerts);
         } else {
-          setCertifications(defaultCertifications);
+          setCertifications([]);
         }
-        setPageContent(pageData.data.content);
+        if (pageData?.data) {
+          setPageContent(pageData.data.content || null);
+        }
       } catch (error) {
         console.error("Failed to fetch data", error);
-        setCertifications(defaultCertifications);
+        setCertifications([]);
       } finally {
         setLoading(false);
       }

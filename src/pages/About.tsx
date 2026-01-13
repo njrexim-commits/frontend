@@ -81,29 +81,37 @@ const About = () => {
 
   if (loading && !content) return <Loader />;
 
-  const pageValues = content?.values?.map((v) => ({
+  const pageValues = content?.values && Array.isArray(content.values) ? content.values.map((v) => ({
     ...v,
     icon: iconMap[v.icon] || Target
-  })) || defaultValues;
+  })) : defaultValues;
 
-  const hero = content?.hero || {
-    badge: "About NJR Exim",
-    title: "Your Trusted Partner in Global Trade",
-    description: "With years of experience in international trade, we've built a reputation for delivering premium agricultural and food products to markets across the globe."
+  const getSafeHero = () => {
+    if (!content?.hero) return {
+      badge: "About NJR Exim",
+      title: "Your Trusted Partner in Global Trade",
+      description: "With years of experience in international trade, we've built a reputation for delivering premium agricultural and food products to markets across the globe."
+    };
+    return content.hero;
   };
+  const hero = getSafeHero();
 
-  const story = content?.story || {
-    badge: "Our Story",
-    title: "Building Bridges Between Markets",
-    content: [
-      "NJR Exim was founded with a simple yet powerful vision: to connect the finest agricultural products from India with global markets seeking quality, reliability, and consistency.",
-      "Starting from humble beginnings, we've grown into a trusted name in international export, serving clients across the Middle East, Europe, Southeast Asia, and beyond.",
-      "Today, we handle everything from sourcing and quality control to packaging, documentation, and logistics, ensuring a seamless experience for our clients."
-    ],
-    image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&q=80",
-    statValue: "100%",
-    statLabel: "Customer Satisfaction"
+  const getSafeStory = () => {
+    if (!content?.story) return {
+      badge: "Our Story",
+      title: "Building Bridges Between Markets",
+      content: [
+        "NJR Exim was founded with a simple yet powerful vision: to connect the finest agricultural products from India with global markets seeking quality, reliability, and consistency.",
+        "Starting from humble beginnings, we've grown into a trusted name in international export, serving clients across the Middle East, Europe, Southeast Asia, and beyond.",
+        "Today, we handle everything from sourcing and quality control to packaging, documentation, and logistics, ensuring a seamless experience for our clients."
+      ],
+      image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&q=80",
+      statValue: "100%",
+      statLabel: "Customer Satisfaction"
+    };
+    return content.story;
   };
+  const story = getSafeStory();
 
   return (
     <Layout>

@@ -185,97 +185,99 @@ const ProductManager = () => {
                     </div>
                 </CardHeader>
                 <CardContent className="p-0">
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="bg-slate-50/50 hover:bg-slate-50/50 border-slate-100">
-                                <TableHead className="w-[80px] font-bold text-slate-700">Image</TableHead>
-                                <TableHead className="font-bold text-slate-700">Product Info</TableHead>
-                                <TableHead className="font-bold text-slate-700">Category</TableHead>
-                                <TableHead className="font-bold text-slate-700 text-center">Featured</TableHead>
-                                <TableHead className="text-right font-bold text-slate-700 px-6">Actions</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {loading ? (
-                                Array(5).fill(0).map((_, i) => (
-                                    <TableRow key={i} className="animate-pulse">
-                                        <TableCell><div className="w-12 h-12 bg-slate-100 rounded"></div></TableCell>
-                                        <TableCell><div className="h-4 bg-slate-100 rounded w-48"></div></TableCell>
-                                        <TableCell><div className="h-4 bg-slate-100 rounded w-24"></div></TableCell>
-                                        <TableCell><div className="h-5 bg-slate-100 rounded-full w-12 mx-auto"></div></TableCell>
-                                        <TableCell className="text-right"><div className="h-8 bg-slate-100 rounded-full w-8 ml-auto"></div></TableCell>
-                                    </TableRow>
-                                ))
-                            ) : filteredProducts.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={5} className="h-64 text-center">
-                                        <div className="flex flex-col items-center justify-center text-slate-400">
-                                            <Package size={48} className="mb-2 opacity-20" />
-                                            <p className="font-medium">No products found</p>
-                                            <p className="text-xs">Start building your catalog by adding a new product.</p>
-                                        </div>
-                                    </TableCell>
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow className="bg-slate-50/50 hover:bg-slate-50/50 border-slate-100">
+                                    <TableHead className="w-[80px] font-bold text-slate-700">Image</TableHead>
+                                    <TableHead className="font-bold text-slate-700">Product Info</TableHead>
+                                    <TableHead className="hidden md:table-cell font-bold text-slate-700">Category</TableHead>
+                                    <TableHead className="hidden md:table-cell font-bold text-slate-700 text-center">Featured</TableHead>
+                                    <TableHead className="text-right font-bold text-slate-700 px-6">Actions</TableHead>
                                 </TableRow>
-                            ) : (
-                                filteredProducts.map((product) => (
-                                    <TableRow key={product._id} className="group hover:bg-slate-50/80 transition-colors border-slate-50">
-                                        <TableCell>
-                                            <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-slate-100 bg-slate-50 shadow-sm">
-                                                {product.images?.[0] ? (
-                                                    <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-slate-300">
-                                                        <Package size={20} />
-                                                    </div>
-                                                )}
+                            </TableHeader>
+                            <TableBody>
+                                {loading ? (
+                                    Array(5).fill(0).map((_, i) => (
+                                        <TableRow key={i} className="animate-pulse">
+                                            <TableCell><div className="w-12 h-12 bg-slate-100 rounded"></div></TableCell>
+                                            <TableCell><div className="h-4 bg-slate-100 rounded w-48"></div></TableCell>
+                                            <TableCell className="hidden md:table-cell"><div className="h-4 bg-slate-100 rounded w-24"></div></TableCell>
+                                            <TableCell className="hidden md:table-cell"><div className="h-5 bg-slate-100 rounded-full w-12 mx-auto"></div></TableCell>
+                                            <TableCell className="text-right"><div className="h-8 bg-slate-100 rounded-full w-8 ml-auto"></div></TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : filteredProducts.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} className="h-64 text-center">
+                                            <div className="flex flex-col items-center justify-center text-slate-400">
+                                                <Package size={48} className="mb-2 opacity-20" />
+                                                <p className="font-medium">No products found</p>
+                                                <p className="text-xs">Start building your catalog by adding a new product.</p>
                                             </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex flex-col gap-0.5">
-                                                <span className="font-bold text-slate-800 group-hover:text-primary transition-colors">{product.name}</span>
-                                                <span className="text-xs text-slate-400 line-clamp-1 max-w-xs">{product.description.substring(0, 60)}...</span>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center gap-1.5">
-                                                <div className="px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 text-xs font-medium border border-slate-200">
-                                                    {product.category}
-                                                </div>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-center">
-                                            {product.isFeatured ? (
-                                                <Badge className="bg-amber-50 text-amber-600 hover:bg-amber-100 border-amber-100 px-2.5 py-0.5 h-auto shadow-sm shadow-amber-100">
-                                                    <Star className="w-3 h-3 mr-1.5 fill-amber-500 text-amber-500" />
-                                                    Featured
-                                                </Badge>
-                                            ) : (
-                                                <span className="text-xs text-slate-300">-</span>
-                                            )}
-                                        </TableCell>
-                                        <TableCell className="text-right px-6">
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-200 text-slate-400 hover:text-slate-600">
-                                                        <MoreVertical className="h-4 w-4" />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end" className="w-40">
-                                                    <DropdownMenuItem onClick={() => handleOpenDialog(product)} className="cursor-pointer">
-                                                        <Edit className="mr-2 h-4 w-4" /> Edit Product
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuSeparator />
-                                                    <DropdownMenuItem onClick={() => handleDelete(product._id)} className="cursor-pointer text-red-600 focus:text-red-700 focus:bg-red-50">
-                                                        <Trash className="mr-2 h-4 w-4" /> Delete Product
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
                                         </TableCell>
                                     </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
+                                ) : (
+                                    filteredProducts.map((product) => (
+                                        <TableRow key={product._id} className="group hover:bg-slate-50/80 transition-colors border-slate-50">
+                                            <TableCell>
+                                                <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-slate-100 bg-slate-50 shadow-sm">
+                                                    {product.images?.[0] ? (
+                                                        <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-slate-300">
+                                                            <Package size={20} />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex flex-col gap-0.5">
+                                                    <span className="font-bold text-slate-800 group-hover:text-primary transition-colors">{product.name}</span>
+                                                    <span className="text-xs text-slate-400 line-clamp-1 max-w-xs">{product.description.substring(0, 60)}...</span>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                                <div className="flex items-center gap-1.5">
+                                                    <div className="px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 text-xs font-medium border border-slate-200">
+                                                        {product.category}
+                                                    </div>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell text-center">
+                                                {product.isFeatured ? (
+                                                    <Badge className="bg-amber-50 text-amber-600 hover:bg-amber-100 border-amber-100 px-2.5 py-0.5 h-auto shadow-sm shadow-amber-100">
+                                                        <Star className="w-3 h-3 mr-1.5 fill-amber-500 text-amber-500" />
+                                                        Featured
+                                                    </Badge>
+                                                ) : (
+                                                    <span className="text-slate-400 text-xs">-</span>
+                                                )}
+                                            </TableCell>
+                                            <TableCell className="text-right px-6">
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-200 text-slate-400 hover:text-slate-600">
+                                                            <MoreVertical className="h-4 w-4" />
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end" className="w-40">
+                                                        <DropdownMenuItem onClick={() => handleOpenDialog(product)} className="cursor-pointer">
+                                                            <Edit className="mr-2 h-4 w-4" /> Edit Product
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem onClick={() => handleDelete(product._id)} className="cursor-pointer text-red-600 focus:text-red-700 focus:bg-red-50">
+                                                            <Trash className="mr-2 h-4 w-4" /> Delete Product
+                                                        </DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </CardContent>
             </Card>
 

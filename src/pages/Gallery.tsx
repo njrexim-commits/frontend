@@ -12,51 +12,14 @@ const Gallery = () => {
   const [pageContent, setPageContent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const defaultGalleryImages = [
-    {
-      id: 1,
-      url: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=800&q=80",
-      title: "Premium Basmati Rice",
-      category: "Products",
-    },
-    {
-      id: 2,
-      url: "https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=800&q=80",
-      title: "Container Shipping",
-      category: "Logistics",
-    },
-    {
-      id: 3,
-      url: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=800&q=80",
-      title: "Fresh Alphonso Mangoes",
-      category: "Products",
-    },
-    {
-      id: 4,
-      url: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800&q=80",
-      title: "Spices Collection",
-      category: "Products",
-    },
-    {
-      id: 5,
-      url: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80",
-      title: "Warehouse Operations",
-      category: "Facilities",
-    },
-    {
-      id: 6,
-      url: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=800&q=80",
-      title: "Fresh Red Onions",
-      category: "Products",
-    },
-  ];
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [galleryData, pageData] = await Promise.all([
-          api.get("/gallery"),
-          api.get("/pages/gallery")
+          api.get("/gallery").catch(err => ({ data: [] })),
+          api.get("/pages/gallery").catch(err => ({ data: { content: null } }))
         ]);
         const { data } = galleryData;
         if (data && data.length > 0) {
@@ -68,12 +31,14 @@ const Gallery = () => {
           }));
           setGalleryImages(formattedImages);
         } else {
-          setGalleryImages(defaultGalleryImages);
+          setGalleryImages([]);
         }
-        setPageContent(pageData.data.content);
+        if (pageData && pageData.data) {
+          setPageContent(pageData.data.content || null);
+        }
       } catch (error) {
         console.error("Failed to fetch data", error);
-        setGalleryImages(defaultGalleryImages);
+        setGalleryImages([]);
       } finally {
         setLoading(false);
       }

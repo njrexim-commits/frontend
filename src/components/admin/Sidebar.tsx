@@ -120,6 +120,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, isMobile, userInfo, handleLogout
                                         <Link
                                             key={item.path}
                                             to={item.path}
+                                            onClick={() => isMobile && setSidebarOpen(false)}
                                             className={cn(
                                                 "flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 group relative",
                                                 isActive

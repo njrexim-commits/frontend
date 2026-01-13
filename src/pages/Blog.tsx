@@ -25,45 +25,14 @@ const Blog = () => {
   const [pageContent, setPageContent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const defaultBlogPosts: BlogPost[] = [
-    {
-      id: "1",
-      title: "The Global Demand for Indian Basmati Rice: Trends and Insights",
-      excerpt: "Explore the growing international demand for premium Indian basmati rice and what makes it a favorite in global markets.",
-      image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=800&q=80",
-      category: "Market Trends",
-      date: "2024-12-15",
-      readTime: "5 min read",
-      author: "NJR Exim Team",
-    },
-    {
-      id: "2",
-      title: "Quality Control in Agricultural Exports: Our Process",
-      excerpt: "Learn about our comprehensive quality control measures that ensure every shipment meets international standards.",
-      image: "https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?w=800&q=80",
-      category: "Quality Assurance",
-      date: "2024-12-10",
-      readTime: "7 min read",
-      author: "Quality Team",
-    },
-    {
-      id: "3",
-      title: "Understanding International Food Safety Certifications",
-      excerpt: "A comprehensive guide to the various certifications required for exporting food products to different countries.",
-      image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80",
-      category: "Compliance",
-      date: "2024-12-05",
-      readTime: "6 min read",
-      author: "Compliance Team",
-    },
-  ];
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [blogsData, pageData] = await Promise.all([
-          api.get("/blogs"),
-          api.get("/pages/blog")
+          api.get("/blogs").catch(err => ({ data: [] })),
+          api.get("/pages/blog").catch(err => ({ data: { content: null } }))
         ]);
         const { data } = blogsData;
         if (data && data.length > 0) {
@@ -71,7 +40,7 @@ const Blog = () => {
             id: blog._id,
             title: blog.title,
             excerpt: blog.excerpt || blog.content?.substring(0, 150) + "...",
-            image: blog.image || defaultBlogPosts[0].image,
+            image: blog.image || "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=800&q=80",
             category: blog.category || "Uncategorized",
             date: blog.createdAt || blog.date,
             readTime: `${Math.ceil((blog.content?.length || 500) / 200)} min read`,
@@ -79,12 +48,14 @@ const Blog = () => {
           }));
           setBlogPosts(formattedBlogs);
         } else {
-          setBlogPosts(defaultBlogPosts);
+          setBlogPosts([]);
         }
-        setPageContent(pageData.data.content);
+        if (pageData?.data) {
+          setPageContent(pageData.data.content || null);
+        }
       } catch (error) {
         console.error("Failed to fetch data", error);
-        setBlogPosts(defaultBlogPosts);
+        setBlogPosts([]);
       } finally {
         setLoading(false);
       }

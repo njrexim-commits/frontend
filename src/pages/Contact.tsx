@@ -37,11 +37,15 @@ const Contact = () => {
     const fetchData = async () => {
       try {
         const [pageData, settingsData] = await Promise.all([
-          api.get("/pages/contact"),
-          api.get("/settings")
+          api.get("/pages/contact").catch(err => ({ data: { content: null } })),
+          api.get("/settings").catch(err => ({ data: null }))
         ]);
-        setContent(pageData.data.content);
-        setSettings(settingsData.data);
+        if (pageData?.data) {
+          setContent(pageData.data.content || null);
+        }
+        if (settingsData?.data) {
+          setSettings(settingsData.data);
+        }
       } catch (error) {
         console.error("Failed to fetch contact page data", error);
       } finally {
