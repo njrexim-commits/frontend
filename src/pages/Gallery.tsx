@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Layout from "@/components/layout/Layout";
+import SEO from "@/components/SEO";
 import { X } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
@@ -120,12 +121,17 @@ const Gallery = () => {
   const categories = ["All", ...Array.from(new Set(galleryImages.map(img => img.category)))];
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const filteredImages = selectedCategory === "All" 
-    ? galleryImages 
+  const filteredImages = selectedCategory === "All"
+    ? galleryImages
     : galleryImages.filter(img => img.category === selectedCategory);
 
   return (
     <Layout>
+      <SEO
+        title="Our Facilities & Product Gallery"
+        description="A visual journey through NJR EXIM's premium products, state-of-the-art facilities, quality inspection process, and global logistics operations."
+        canonical="/gallery"
+      />
       {/* Hero Section */}
       <section className="relative bg-secondary text-secondary-foreground pt-32 pb-16">
         <div className="container-custom">
@@ -137,7 +143,7 @@ const Gallery = () => {
               Visual <span className="text-golden">Journey</span>
             </h1>
             <p className="text-lg text-secondary-foreground/80 leading-relaxed">
-              Explore our collection of premium products, state-of-the-art facilities, 
+              Explore our collection of premium products, state-of-the-art facilities,
               and global operations through our image gallery.
             </p>
           </div>
@@ -152,11 +158,10 @@ const Gallery = () => {
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${
-                  selectedCategory === category
+                className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${selectedCategory === category
                     ? "bg-primary text-primary-foreground shadow-lg scale-105"
                     : "bg-muted text-muted-foreground hover:bg-muted/80"
-                }`}
+                  }`}
               >
                 {category}
               </button>

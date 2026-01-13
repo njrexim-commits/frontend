@@ -14,7 +14,8 @@ import {
     ShieldAlert,
     Bell,
     Search,
-    User
+    User,
+    Monitor
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -69,6 +70,7 @@ const AdminLayout = () => {
         { title: "Certificates", icon: Award, path: "/admin/certificates" },
         { title: "Gallery", icon: ImageIcon, path: "/admin/gallery" },
         { title: "Inquiries", icon: MessageSquare, path: "/admin/inquiries" },
+        { title: "Pages", icon: Monitor, path: "/admin/pages" },
         ...(isSuperAdmin ? [
             { title: "Users", icon: Users, path: "/admin/users" },
             { title: "Settings", icon: ShieldAlert, path: "/admin/settings" }

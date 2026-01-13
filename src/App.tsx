@@ -15,7 +15,7 @@ import NotFound from "./pages/NotFound";
 
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminLogin from "./pages/admin/Login";
-import AdminDashboard from "./pages/admin/AdminDashboard";
+import Dashboard from "./pages/admin/Dashboard";
 import BlogManager from "./pages/admin/BlogManager";
 import ProductManager from "./pages/admin/ProductManager";
 import CertificateManager from "./pages/admin/CertificateManager";
@@ -24,6 +24,7 @@ import InquiryManager from "./pages/admin/InquiryManager";
 import UserManagement from "./pages/admin/UserManagement";
 import Settings from "./pages/admin/Settings";
 import Setup from "./pages/admin/Setup";
+import PageManager from "./pages/admin/PageManager";
 
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -50,7 +51,7 @@ const App = () => (
           <Route path="/setup" element={<Setup />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminLayout />}>
-            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
             <Route path="blogs" element={<BlogManager />} />
             <Route path="products" element={<ProductManager />} />
             <Route path="certificates" element={<CertificateManager />} />
@@ -58,6 +59,7 @@ const App = () => (
             <Route path="inquiries" element={<InquiryManager />} />
             <Route path="users" element={<UserManagement />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="pages" element={<PageManager />} />
           </Route>
 
           {/* Catch-all route for 404 */}

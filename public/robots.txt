@@ -1,14 +1,16 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
+# https://www.robotstxt.org/robotstxt.html
 
 User-agent: *
 Allow: /
+
+# Dissalow admin and sensitive paths
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /setup
+Disallow: /api/*
+
+# Host
+Host: https://njrexim.com
+
+# Sitemap
+Sitemap: https://njrexim.com/sitemap.xml

@@ -1,5 +1,5 @@
-import { useState } from "react";
 import Layout from "@/components/layout/Layout";
+import SEO from "@/components/SEO";
 import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,10 +12,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEffect, useState } from "react";
+import api from "@/lib/api";
+import Loader from "@/components/ui/Loader";
+
+const iconMap: { [key: string]: any } = {
+  MapPin,
+  Phone,
+  Mail,
+  Clock
+};
 
 const Contact = () => {
+  const [content, setContent] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const { data } = await api.get("/pages/contact");
+        setContent(data.content);
+      } catch (error) {
+        console.error("Failed to fetch contact page content", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchContent();
+  }, []);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -39,28 +66,27 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    toast({
-      title: "Message Sent Successfully!",
-      description: "Thank you for contacting us. We'll get back to you within 24 hours.",
-    });
-
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      company: "",
-      country: "",
-      subject: "",
-      message: "",
-    });
-    setIsSubmitting(false);
+    try {
+      await api.post("/inquiries", formData);
+      toast({
+        title: "Message Sent Successfully!",
+        description: "Thank you for contacting us. We'll get back to you within 24 hours.",
+      });
+      setFormData({
+        name: "", email: "", phone: "", company: "", country: "", subject: "", message: ""
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const contactInfo = [
+  const defaultContactInfo = [
     {
       icon: MapPin,
       title: "Visit Us",
@@ -83,21 +109,43 @@ const Contact = () => {
     },
   ];
 
+  if (loading && !content) return <Loader />;
+
+  const hero = content?.hero || {
+    badge: "Get In Touch",
+    title: "Contact Us",
+    description: "Have questions about our products or services? We're here to help. Reach out to us and we'll respond as soon as possible."
+  };
+
+  const info = content?.info;
+  const contactCards = info ? [
+    { icon: MapPin, title: "Visit Us", details: info.address },
+    { icon: Phone, title: "Call Us", details: info.phones },
+    { icon: Mail, title: "Email Us", details: info.emails },
+    { icon: Clock, title: "Working Hours", details: info.workingHours },
+  ] : defaultContactInfo;
+
   return (
     <Layout>
+      <SEO
+        title="Contact Us for Global Export Inquiries"
+        description="Get in touch with NJR EXIM for premium agricultural product quotes, export inquiries, and international trade partnerships. We respond within 24 hours."
+        canonical="/contact"
+      />
       {/* Hero Section */}
       <section className="relative bg-secondary text-secondary-foreground pt-32 pb-16">
         <div className="container-custom">
           <div className="max-w-3xl">
             <span className="inline-block px-4 py-2 bg-primary/20 text-primary-foreground text-sm font-medium uppercase tracking-widest rounded-full mb-6 border border-primary/30">
-              Get In Touch
+              {hero.badge}
             </span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Contact <span className="text-golden">Us</span>
+              {hero.title.includes("Us") ? (
+                <>Contact <span className="text-golden">Us</span></>
+              ) : hero.title}
             </h1>
             <p className="text-lg text-secondary-foreground/80 leading-relaxed">
-              Have questions about our products or services? We're here to help. 
-              Reach out to us and we'll respond as soon as possible.
+              {hero.description}
             </p>
           </div>
         </div>
@@ -107,7 +155,7 @@ const Contact = () => {
       <section className="section-padding bg-background">
         <div className="container-custom">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-            {contactInfo.map((info) => (
+            {contactCards.map((info) => (
               <div
                 key={info.title}
                 className="bg-card p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300"
@@ -284,7 +332,7 @@ const Contact = () => {
               <div className="bg-primary text-primary-foreground p-8 rounded-2xl">
                 <h3 className="text-2xl font-bold mb-4">Quick Response Guarantee</h3>
                 <p className="text-primary-foreground/90 mb-6">
-                  We understand the importance of timely communication in international trade. 
+                  We understand the importance of timely communication in international trade.
                   Our team is committed to responding to all inquiries within 24 hours.
                 </p>
                 <ul className="space-y-3">
@@ -314,7 +362,7 @@ const Contact = () => {
             Have Questions Before Reaching Out?
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-            Check out our FAQ section for answers to common questions about our products, 
+            Check out our FAQ section for answers to common questions about our products,
             services, and export process.
           </p>
           <a

@@ -4,8 +4,9 @@ import { FileText, Package, Award, MessageSquare, TrendingUp, Users, ArrowUpRigh
 import { Button } from "@/components/ui/button";
 import api from "@/lib/api";
 import { cn } from "@/lib/utils";
+import Loader from "@/components/ui/Loader";
 
-const AdminDashboard = () => {
+const Dashboard = () => {
     const [stats, setStats] = useState({
         blogs: 0,
         products: 0,
@@ -46,14 +47,7 @@ const AdminDashboard = () => {
     ];
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-[400px]">
-                <div className="relative">
-                    <div className="w-12 h-12 rounded-full border-4 border-indigo-100"></div>
-                    <div className="w-12 h-12 rounded-full border-4 border-indigo-600 border-t-transparent animate-spin absolute inset-0"></div>
-                </div>
-            </div>
-        );
+        return <Loader />;
     }
 
     return (
@@ -154,4 +148,4 @@ const AdminDashboard = () => {
     );
 };
 
-export default AdminDashboard;
+export default Dashboard;

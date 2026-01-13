@@ -1,4 +1,5 @@
 import Layout from "@/components/layout/Layout";
+import SEO from "@/components/SEO";
 import { Award, CheckCircle, FileCheck, Globe, Shield } from "lucide-react";
 
 const Certificates = () => {
@@ -79,6 +80,11 @@ const Certificates = () => {
 
   return (
     <Layout>
+      <SEO
+        title="Quality Certifications & Global Compliance"
+        description="NJR EXIM is proud to hold ISO 9001:2015, FSSAI, IEC, and APEDA certifications. We maintain the highest standards of food safety and quality management."
+        canonical="/certificates"
+      />
       {/* Hero Section */}
       <section className="relative bg-secondary text-secondary-foreground pt-32 pb-16">
         <div className="container-custom">
@@ -90,7 +96,7 @@ const Certificates = () => {
               Quality <span className="text-golden">Certifications</span>
             </h1>
             <p className="text-lg text-secondary-foreground/80 leading-relaxed">
-              Our commitment to quality is validated by international certifications and compliance 
+              Our commitment to quality is validated by international certifications and compliance
               with global food safety standards.
             </p>
           </div>
@@ -105,7 +111,7 @@ const Certificates = () => {
               Our Certifications
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              We hold various certifications that demonstrate our commitment to quality, 
+              We hold various certifications that demonstrate our commitment to quality,
               safety, and compliance with international standards.
             </p>
           </div>
@@ -141,7 +147,7 @@ const Certificates = () => {
               Quality Standards & Compliance
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              We adhere to stringent quality standards and provide comprehensive documentation 
+              We adhere to stringent quality standards and provide comprehensive documentation
               for all our exports.
             </p>
           </div>

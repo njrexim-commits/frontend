@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Layout from "@/components/layout/Layout";
+import SEO from "@/components/SEO";
 import { Calendar, Clock, ArrowRight, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -117,7 +118,7 @@ const Blog = () => {
   const filteredPosts = blogPosts.filter(post => {
     const matchesCategory = selectedCategory === "All" || post.category === selectedCategory;
     const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+      post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
@@ -125,6 +126,11 @@ const Blog = () => {
 
   return (
     <Layout>
+      <SEO
+        title="Industry Insights & Export News"
+        description="Stay updated with the latest in international agricultural trade, market trends, and expert insights from the NJR EXIM team."
+        canonical="/blog"
+      />
       {/* Hero Section */}
       <section className="relative bg-secondary text-secondary-foreground pt-32 pb-16">
         <div className="container-custom">
@@ -136,10 +142,10 @@ const Blog = () => {
               Industry <span className="text-golden">Insights</span>
             </h1>
             <p className="text-lg text-secondary-foreground/80 leading-relaxed mb-8">
-              Stay informed with the latest trends, insights, and news from the agricultural 
+              Stay informed with the latest trends, insights, and news from the agricultural
               export industry.
             </p>
-            
+
             {/* Search Bar */}
             <div className="relative max-w-md">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -204,11 +210,10 @@ const Blog = () => {
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${
-                  selectedCategory === category
+                className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${selectedCategory === category
                     ? "bg-primary text-primary-foreground shadow-lg scale-105"
                     : "bg-background text-muted-foreground hover:bg-background/80"
-                }`}
+                  }`}
               >
                 {category}
               </button>

@@ -1,8 +1,37 @@
 import Layout from "@/components/layout/Layout";
+import SEO from "@/components/SEO";
 import { Globe, Target, Eye, Award, Users, TrendingUp } from "lucide-react";
+import { useState, useEffect } from "react";
+import api from "@/lib/api";
+import Loader from "@/components/ui/Loader";
+
+const iconMap: { [key: string]: any } = {
+  Target,
+  Eye,
+  Award,
+  Users,
+  Globe
+};
 
 const About = () => {
-  const values = [
+  const [content, setContent] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const { data } = await api.get("/pages/about");
+        setContent(data.content);
+      } catch (error) {
+        console.error("Failed to fetch page content", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchContent();
+  }, []);
+
+  const defaultValues = [
     {
       icon: Target,
       title: "Our Mission",
@@ -46,21 +75,52 @@ const About = () => {
     },
   ];
 
+  if (loading && !content) return <Loader />;
+
+  const pageValues = content?.values?.map((v: any) => ({
+    ...v,
+    icon: iconMap[v.icon] || Target
+  })) || defaultValues;
+
+  const hero = content?.hero || {
+    badge: "About NJR Exim",
+    title: "Your Trusted Partner in Global Trade",
+    description: "With years of experience in international trade, we've built a reputation for delivering premium agricultural and food products to markets across the globe."
+  };
+
+  const story = content?.story || {
+    badge: "Our Story",
+    title: "Building Bridges Between Markets",
+    content: [
+      "NJR Exim was founded with a simple yet powerful vision: to connect the finest agricultural products from India with global markets seeking quality, reliability, and consistency.",
+      "Starting from humble beginnings, we've grown into a trusted name in international export, serving clients across the Middle East, Europe, Southeast Asia, and beyond.",
+      "Today, we handle everything from sourcing and quality control to packaging, documentation, and logistics, ensuring a seamless experience for our clients."
+    ],
+    image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&q=80",
+    statValue: "100%",
+    statLabel: "Customer Satisfaction"
+  };
+
   return (
     <Layout>
-      {/* Hero Section */}
+      <SEO
+        title="About Our Export Excellence"
+        description="Learn about NJR EXIM's journey, our mission to connect global markets with premium Indian agricultural products, and our unwavering commitment to quality."
+        canonical="/about"
+      />
       <section className="relative bg-secondary text-secondary-foreground pt-32 pb-16">
         <div className="container-custom">
           <div className="max-w-3xl">
             <span className="inline-block px-4 py-2 bg-primary/20 text-primary-foreground text-sm font-medium uppercase tracking-widest rounded-full mb-6 border border-primary/30">
-              About NJR Exim
+              {hero.badge}
             </span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Your Trusted Partner in <span className="text-golden">Global Trade</span>
+              {hero.title.includes("Global Trade") ? (
+                <>Your Trusted Partner in <span className="text-golden">Global Trade</span></>
+              ) : hero.title}
             </h1>
             <p className="text-lg text-secondary-foreground/80 leading-relaxed">
-              With years of experience in international trade, we've built a reputation for delivering 
-              premium agricultural and food products to markets across the globe.
+              {hero.description}
             </p>
           </div>
         </div>
@@ -70,7 +130,7 @@ const About = () => {
       <section className="section-padding bg-background">
         <div className="container-custom">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {values.map((value) => (
+            {pageValues.map((value: any) => (
               <div key={value.title} className="bg-card p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6">
                   <value.icon className="w-8 h-8 text-primary" />
@@ -89,38 +149,31 @@ const About = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <span className="inline-block text-primary font-semibold uppercase tracking-wider text-sm mb-4">
-                Our Story
+                {story.badge}
               </span>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-                Building Bridges Between Markets
+                {story.title}
               </h2>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                NJR Exim was founded with a simple yet powerful vision: to connect the finest agricultural 
-                products from India with global markets seeking quality, reliability, and consistency.
-              </p>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                Starting from humble beginnings, we've grown into a trusted name in international export, 
-                serving clients across the Middle East, Europe, Southeast Asia, and beyond. Our success 
-                is built on strong relationships, unwavering commitment to quality, and a deep understanding 
-                of both local sourcing and international trade requirements.
-              </p>
-              <p className="text-muted-foreground leading-relaxed">
-                Today, we handle everything from sourcing and quality control to packaging, documentation, 
-                and logistics, ensuring a seamless experience for our clients at every step of the journey.
-              </p>
+              {story.content.map((p: string, i: number) => (
+                <p key={i} className="text-muted-foreground leading-relaxed mb-4">
+                  {p}
+                </p>
+              ))}
             </div>
             <div className="relative">
               <img
-                src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&q=80"
-                alt="Team collaboration"
+                src={story.image}
+                alt="Story illustration"
                 className="w-full h-[500px] object-cover rounded-2xl shadow-2xl"
               />
               <div className="absolute -bottom-6 -left-6 bg-primary text-primary-foreground rounded-2xl p-8 shadow-xl">
                 <div className="text-center">
                   <TrendingUp className="w-12 h-12 mx-auto mb-3" />
-                  <span className="block text-3xl font-bold">100%</span>
+                  <span className="block text-3xl font-bold">{story.statValue}</span>
                   <span className="text-sm uppercase tracking-wider opacity-90">
-                    Customer<br />Satisfaction
+                    {story.statLabel.split(' ').map((word: string, i: number) => (
+                      <span key={i}>{word}{i === 0 && <br />}</span>
+                    ))}
                   </span>
                 </div>
               </div>
@@ -146,7 +199,7 @@ const About = () => {
           <div className="relative">
             {/* Timeline Line */}
             <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-primary/20" />
-            
+
             <div className="space-y-12">
               {milestones.map((milestone, index) => (
                 <div key={milestone.year} className={`relative flex items-center ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>

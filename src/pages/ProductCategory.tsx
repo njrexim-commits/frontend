@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
+import SEO from "@/components/SEO";
 import { ArrowLeft, Package, FileText, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -242,6 +243,11 @@ const ProductCategory = () => {
 
   return (
     <Layout>
+      <SEO
+        title={`${category.title} - Quality Export Grade`}
+        description={category.description}
+        canonical={`/products/${slug}`}
+      />
       {/* Breadcrumb & Header */}
       <section className="bg-secondary text-secondary-foreground pt-32 pb-12">
         <div className="container-custom">

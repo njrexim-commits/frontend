@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Layout from "@/components/layout/Layout";
+import SEO from "@/components/SEO";
 import { Link } from "react-router-dom";
 import { ArrowRight, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -91,6 +92,11 @@ const Products = () => {
 
   return (
     <Layout>
+      <SEO
+        title="Our Premium Export Products"
+        description="Browse our extensive range of high-quality export products: Basmati rice, exotic spices, fresh fruits, vegetables, and processed food items."
+        canonical="/products"
+      />
       {/* Hero Section */}
       <section className="relative bg-secondary text-secondary-foreground pt-32 pb-16">
         <div className="container-custom">
@@ -102,10 +108,10 @@ const Products = () => {
               Premium Quality <span className="text-golden">Export Products</span>
             </h1>
             <p className="text-lg text-secondary-foreground/80 leading-relaxed mb-8">
-              Explore our comprehensive range of agricultural and food products, carefully sourced 
+              Explore our comprehensive range of agricultural and food products, carefully sourced
               and prepared to meet international quality standards.
             </p>
-            
+
             {/* Search Bar */}
             <div className="relative max-w-md">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />

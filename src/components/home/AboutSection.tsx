@@ -1,4 +1,13 @@
-const AboutSection = () => {
+interface AboutSectionProps {
+  content?: {
+    badge: string;
+    title: string;
+    description: string;
+    stats: Array<{ label: string; value: string }>;
+  };
+}
+
+const AboutSection = ({ content }: AboutSectionProps) => {
   return (
     <section className="section-padding bg-background">
       <div className="container-custom">
@@ -6,23 +15,13 @@ const AboutSection = () => {
           {/* Text Content */}
           <div className="space-y-6">
             <span className="inline-block text-primary font-semibold uppercase tracking-wider text-sm">
-              About Us
+              {content?.badge || "About Us"}
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-tight">
-              At NJR Exim, we don't just export goods — we export{" "}
-              <span className="text-primary">trust, quality, and long-term value.</span>
+              {content?.title || "At NJR Exim, we don't just export goods — we export trust, quality, and long-term value."}
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              With years of experience in international trade, NJR Exim has established 
-              itself as a reliable partner for businesses seeking premium agricultural 
-              and food products. Our commitment to quality, timely delivery, and 
-              customer satisfaction has earned us the trust of clients across the globe.
-            </p>
-            <p className="text-muted-foreground leading-relaxed">
-              We specialize in sourcing and exporting the finest products from India, 
-              ensuring that every shipment meets international quality standards and 
-              regulatory requirements. From farm to destination, we manage the entire 
-              supply chain with precision and care.
+              {content?.description || "With years of experience in international trade, NJR Exim has established itself as a reliable partner for businesses seeking premium agricultural and food products."}
             </p>
             <div className="flex flex-wrap gap-6 pt-4">
               <div className="flex items-center gap-3">
@@ -56,16 +55,20 @@ const AboutSection = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
             </div>
-            
+
             {/* Floating Badge */}
-            <div className="absolute -bottom-6 -right-6 md:bottom-8 md:right-8 bg-primary text-white rounded-2xl p-6 shadow-xl animate-fade-in">
-              <div className="text-center">
-                <span className="block text-4xl md:text-5xl font-bold">8</span>
-                <span className="text-sm uppercase tracking-wider opacity-90">
-                  Years of<br />Excellence
-                </span>
+            {content?.stats && content.stats.length > 0 && (
+              <div className="absolute -bottom-6 -right-6 md:bottom-8 md:right-8 bg-primary text-white rounded-2xl p-6 shadow-xl animate-fade-in">
+                <div className="text-center">
+                  <span className="block text-4xl md:text-5xl font-bold">{content.stats[0].value}</span>
+                  <span className="text-sm uppercase tracking-wider opacity-90">
+                    {content.stats[0].label.includes(' ') ? (
+                      <>{content.stats[0].label.split(' ')[0]}<br />{content.stats[0].label.split(' ')[1]}</>
+                    ) : content.stats[0].label}
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
