@@ -8,9 +8,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Plus, Trash, FileText, Award, Search, MoreVertical, ExternalLink, ShieldCheck, Download, AlertCircle, Eye, X } from "lucide-react";
+import { Plus, Trash, FileText, Award, Search, MoreVertical, ExternalLink, ShieldCheck, Download, Eye, X, CheckCircle } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import api from "@/lib/api";
 import { cn } from "@/lib/utils";
+import StatsCard from "@/components/admin/StatsCard";
 
 interface Certificate {
     _id: string;
@@ -91,31 +92,58 @@ const CertificateManager = () => {
         cert.issuer.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    // Stats
+    const totalCerts = certificates.length;
+    const uniqueIssuers = new Set(certificates.map(c => c.issuer)).size;
+
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-10">
+            {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-extrabold tracking-tight text-secondary">Compliance & Certs</h1>
-                    <div className="flex items-center gap-2 text-slate-500 text-sm">
-                        <Award className="w-4 h-4 text-amber-500" />
-                        <span>Manage your organization's legal and quality certifications.</span>
-                    </div>
+                    <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Compliance & Certs</h1>
+                    <p className="text-slate-500 text-sm">Manage your organization's legal and quality certifications.</p>
                 </div>
-                <Button onClick={() => setIsDialogOpen(true)} className="bg-primary hover:bg-primary/90 shadow-md shadow-primary/20">
+                <Button onClick={() => setIsDialogOpen(true)} className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all hover:scale-105">
                     <Plus className="mr-2 h-4 w-4" /> Add Certificate
                 </Button>
             </div>
 
-            <Card className="border-none shadow-sm overflow-hidden bg-white/50 backdrop-blur-sm">
-                <CardHeader className="pb-0 border-b border-slate-100 bg-white/80">
-                    <div className="flex items-center gap-4 pb-4">
+            {/* Stats Summary */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <StatsCard
+                    title="Active Certifications"
+                    value={totalCerts}
+                    icon={Award}
+                    description="Valid documents"
+                />
+                <StatsCard
+                    title="Issuing Bodies"
+                    value={uniqueIssuers}
+                    icon={ShieldCheck}
+                    className="border-indigo-100"
+                    description="Compliance authorities"
+                />
+                <StatsCard
+                    title="Verified Status"
+                    value="100%"
+                    icon={CheckCircle}
+                    trendDirection="neutral"
+                    description="All docs verified"
+                />
+            </div>
+
+            {/* Main Content */}
+            <Card className="border-slate-200/60 shadow-sm overflow-hidden bg-white/50 backdrop-blur-sm">
+                <CardHeader className="pb-0 border-b border-slate-100 bg-white/80 px-6 py-4">
+                    <div className="flex items-center gap-4">
                         <div className="relative flex-1 max-w-sm group">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
                             <Input
                                 placeholder="Search by title or issuer..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-9 bg-slate-50 border-slate-200 focus-visible:ring-indigo-500/30 font-medium"
+                                className="pl-9 bg-slate-50 border-slate-200 focus-visible:ring-primary/30 font-medium h-10 transition-all"
                             />
                         </div>
                     </div>
@@ -124,7 +152,7 @@ const CertificateManager = () => {
                     <Table>
                         <TableHeader>
                             <TableRow className="bg-slate-50/50 hover:bg-slate-50/50 border-slate-100">
-                                <TableHead className="w-[60px]"></TableHead>
+                                <TableHead className="w-[80px] text-center">Type</TableHead>
                                 <TableHead className="font-bold text-slate-700">Certificate Detail</TableHead>
                                 <TableHead className="font-bold text-slate-700">Issuing Authority</TableHead>
                                 <TableHead className="text-right font-bold text-slate-700 px-6">Actions</TableHead>
@@ -134,7 +162,7 @@ const CertificateManager = () => {
                             {loading ? (
                                 Array(3).fill(0).map((_, i) => (
                                     <TableRow key={i} className="animate-pulse">
-                                        <TableCell><div className="w-8 h-8 bg-slate-100 rounded"></div></TableCell>
+                                        <TableCell><div className="w-10 h-10 bg-slate-100 rounded mx-auto"></div></TableCell>
                                         <TableCell><div className="h-4 bg-slate-100 rounded w-48"></div></TableCell>
                                         <TableCell><div className="h-4 bg-slate-100 rounded w-32"></div></TableCell>
                                         <TableCell className="text-right"><div className="h-8 bg-slate-100 rounded-full w-8 ml-auto"></div></TableCell>
@@ -153,27 +181,27 @@ const CertificateManager = () => {
                             ) : (
                                 filteredCertificates.map((cert) => (
                                     <TableRow key={cert._id} className="group hover:bg-slate-50/80 transition-colors border-slate-50">
-                                        <TableCell>
-                                            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+                                        <TableCell className="text-center">
+                                            <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 border border-indigo-100 mx-auto">
                                                 <FileText size={18} />
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <div className="flex flex-col">
-                                                <span className="font-bold text-slate-800">{cert.title}</span>
+                                            <div className="flex flex-col gap-0.5">
+                                                <span className="font-bold text-slate-800 group-hover:text-primary transition-colors">{cert.title}</span>
                                                 <a
                                                     href={cert.fileUrl}
                                                     target="_blank"
                                                     rel="noreferrer"
-                                                    className="text-[10px] text-indigo-500 hover:underline flex items-center mt-0.5"
+                                                    className="text-[11px] text-indigo-500 hover:text-indigo-700 hover:underline flex items-center font-medium"
                                                 >
                                                     View Source File <ExternalLink size={10} className="ml-1" />
                                                 </a>
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <div className="flex items-center gap-1.5 text-slate-600 font-medium">
-                                                <ShieldCheck className="w-3 h-3 text-emerald-500" />
+                                            <div className="flex items-center gap-2 text-slate-600 font-medium">
+                                                <ShieldCheck className="w-4 h-4 text-emerald-500" />
                                                 {cert.issuer}
                                             </div>
                                         </TableCell>
@@ -190,15 +218,15 @@ const CertificateManager = () => {
                                                             <MoreVertical className="h-4 w-4 text-slate-500" />
                                                         </Button>
                                                     </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end" className="w-40">
+                                                    <DropdownMenuContent align="end" className="w-48">
                                                         <DropdownMenuItem asChild className="cursor-pointer">
                                                             <a href={cert.fileUrl} target="_blank" rel="noreferrer">
-                                                                <Download className="mr-2 h-4 w-4" /> Download PDF
+                                                                <Download className="mr-2 h-4 w-4" /> Download Document
                                                             </a>
                                                         </DropdownMenuItem>
                                                         <DropdownMenuSeparator />
                                                         <DropdownMenuItem onClick={() => handleDelete(cert._id)} className="cursor-pointer text-red-600 focus:text-red-700 focus:bg-red-50">
-                                                            <Trash className="mr-2 h-4 w-4" /> Remove Document
+                                                            <Trash className="mr-2 h-4 w-4" /> Remove Certificate
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
@@ -234,7 +262,7 @@ const CertificateManager = () => {
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                     required
-                                    className="border-slate-200 focus:ring-indigo-500/20 h-10"
+                                    className="border-slate-200 focus:ring-primary/20 h-10"
                                 />
                             </div>
                             <div className="space-y-2">
@@ -244,36 +272,36 @@ const CertificateManager = () => {
                                     value={formData.issuer}
                                     onChange={(e) => setFormData({ ...formData, issuer: e.target.value })}
                                     required
-                                    className="border-slate-200 focus:ring-indigo-500/20 h-10"
+                                    className="border-slate-200 focus:ring-primary/20 h-10"
                                 />
                             </div>
                             <div className="space-y-2">
                                 <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Certification File</Label>
                                 <div className="relative group transition-all">
                                     <div className={cn(
-                                        "min-h-[100px] bg-slate-50 rounded-xl border-2 border-dashed flex flex-col items-center justify-center p-4 transition-all group-hover:bg-slate-100",
-                                        selectedFile ? "border-indigo-300 bg-primary/10/30" : "border-slate-200"
+                                        "min-h-[100px] bg-slate-50 rounded-xl border-2 border-dashed flex flex-col items-center justify-center p-4 transition-all group-hover:bg-slate-100 cursor-pointer",
+                                        selectedFile ? "border-indigo-300 bg-primary/5" : "border-slate-200 hover:border-primary/50"
                                     )}>
                                         {selectedFile ? (
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded bg-white shadow-sm flex items-center justify-center text-primary">
+                                            <div className="flex items-center gap-3 w-full">
+                                                <div className="w-10 h-10 rounded bg-white shadow-sm flex items-center justify-center text-primary shrink-0">
                                                     <FileText size={20} />
                                                 </div>
-                                                <div className="flex flex-col">
-                                                    <span className="text-xs font-bold text-slate-800 max-w-[200px] truncate">{selectedFile.name}</span>
+                                                <div className="flex flex-col min-w-0 flex-1">
+                                                    <span className="text-xs font-bold text-slate-800 truncate">{selectedFile.name}</span>
                                                     <span className="text-[10px] text-slate-400">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</span>
                                                 </div>
                                                 <button
                                                     type="button"
                                                     onClick={(e) => { e.preventDefault(); setSelectedFile(null); }}
-                                                    className="ml-2 p-1 hover:bg-slate-200 rounded-full text-slate-400 hover:text-red-500"
+                                                    className="ml-2 p-1.5 hover:bg-red-50 rounded-full text-slate-400 hover:text-red-500 transition-colors"
                                                 >
                                                     <X size={14} />
                                                 </button>
                                             </div>
                                         ) : (
                                             <>
-                                                <ShieldCheck className="w-8 h-8 text-slate-300 mb-1" />
+                                                <ShieldCheck className="w-8 h-8 text-slate-300 mb-2 group-hover:text-primary transition-colors" />
                                                 <p className="text-[11px] font-medium text-slate-500 text-center">Drag document here or click to browse</p>
                                                 <p className="text-[9px] text-slate-400 mt-1 uppercase tracking-tighter">PDF, JPG, PNG accepted • Max 5MB</p>
                                             </>
@@ -290,12 +318,12 @@ const CertificateManager = () => {
                             </div>
                         </div>
 
-                        <div className="flex flex-col gap-3 pt-4">
+                        <div className="flex flex-col gap-3 pt-4 border-t border-slate-100 mt-2">
                             <Button type="submit" className="w-full bg-secondary hover:bg-secondary/90 text-white h-11 font-bold shadow-lg shadow-slate-900/10">
                                 <Award className="w-4 h-4 mr-2" />
                                 Upload & Verify
                             </Button>
-                            <Button type="button" variant="ghost" onClick={() => setIsDialogOpen(false)} className="w-full text-slate-400 h-10 text-xs">
+                            <Button type="button" variant="ghost" onClick={() => setIsDialogOpen(false)} className="w-full text-slate-400 h-10 text-xs font-bold tracking-widest uppercase hover:bg-slate-50">
                                 Cancel Operation
                             </Button>
                         </div>

@@ -5,8 +5,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { badgeVariants } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
@@ -14,29 +13,24 @@ import {
     Trash,
     Image as ImageIcon,
     Search,
-    MoreVertical,
-    Filter,
     Maximize2,
     X,
     UploadCloud,
     LayoutGrid,
-    Tag
+    CheckCircle,
+    Tag,
+    Clock
 } from "lucide-react";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import api from "@/lib/api";
 import { cn } from "@/lib/utils";
+import StatsCard from "@/components/admin/StatsCard";
 
 interface GalleryItem {
     _id: string;
     title: string;
     imageUrl: string;
     category: string;
+    createdAt?: string;
 }
 
 const GalleryManager = () => {
@@ -120,31 +114,58 @@ const GalleryManager = () => {
         return matchesSearch && matchesCategory;
     });
 
+    // Stats
+    const totalImages = items.length;
+    const categoryCount = new Set(items.map(i => i.category)).size;
+    const recentUploads = items.slice(0, 5).length; // Placeholder logic for now
+
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-10">
+            {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-extrabold tracking-tight text-secondary">Visual Gallery</h1>
-                    <div className="flex items-center gap-2 text-slate-500 text-sm font-medium">
-                        <ImageIcon className="w-4 h-4 text-pink-500" />
-                        <span>Showcase your company's journey and achievements.</span>
-                    </div>
+                    <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Visual Gallery</h1>
+                    <p className="text-slate-500 text-sm">Showcase your company's journey and achievements.</p>
                 </div>
-                <Button onClick={() => setIsDialogOpen(true)} className="bg-primary hover:bg-primary/90 shadow-md shadow-primary/20 px-6 font-bold">
+                <Button onClick={() => setIsDialogOpen(true)} className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all hover:scale-105">
                     <Plus className="mr-2 h-4 w-4" /> Add Image
                 </Button>
             </div>
 
-            <Card className="border-none shadow-sm overflow-hidden bg-white/50 backdrop-blur-sm">
-                <CardHeader className="pb-4 border-b border-slate-100 bg-white/80">
+            {/* Stats Summary */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <StatsCard
+                    title="Total Images"
+                    value={totalImages}
+                    icon={ImageIcon}
+                    description="Assets in portfolio"
+                />
+                <StatsCard
+                    title="Categories"
+                    value={categoryCount}
+                    icon={Tag}
+                    className="border-blue-100"
+                    description="Active groupings"
+                />
+                <StatsCard
+                    title="Recent Uploads"
+                    value={recentUploads}
+                    icon={Clock}
+                    description="New assets added"
+                />
+            </div>
+
+            {/* Main Content */}
+            <Card className="border-slate-200/60 shadow-sm overflow-hidden bg-white/50 backdrop-blur-sm">
+                <CardHeader className="pb-4 border-b border-slate-100 bg-white/80 px-6 py-4">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                         <div className="relative flex-1 max-w-sm group">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
                             <Input
                                 placeholder="Search gallery by title..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-9 bg-slate-50 border-slate-200 focus-visible:ring-indigo-500/30 font-medium h-10 shadow-inner"
+                                className="pl-9 bg-slate-50 border-slate-200 focus-visible:ring-primary/30 font-medium h-10 transition-all"
                             />
                         </div>
 
@@ -157,8 +178,8 @@ const GalleryManager = () => {
                                     className={cn(
                                         "px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap",
                                         selectedCategory === cat
-                                            ? "bg-secondary text-white shadow-md shadow-slate-900/10"
-                                            : "bg-white text-slate-600 hover:bg-slate-50 border border-slate-200"
+                                            ? "bg-secondary text-white shadow-lg shadow-slate-900/10"
+                                            : "bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 hover:border-slate-300"
                                     )}
                                 >
                                     {cat}
@@ -192,18 +213,19 @@ const GalleryManager = () => {
                                     <img
                                         src={item.imageUrl}
                                         alt={item.title}
+                                        loading="lazy"
                                         className="w-full h-full object-cover transition duration-700 group-hover:scale-110"
                                     />
-                                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                                        <p className="text-white text-xs font-bold truncate mb-1">{item.title}</p>
+                                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end">
+                                        <p className="text-white text-xs font-bold truncate mb-2">{item.title}</p>
                                         <div className="flex items-center justify-between">
-                                            <Badge variant="outline" className="text-[9px] h-4 border-white/20 text-white/90 bg-white/10 uppercase tracking-tighter">
+                                            <Badge variant="outline" className="text-[9px] h-5 border-white/20 text-white/90 bg-white/10 uppercase tracking-tighter backdrop-blur-md">
                                                 {item.category}
                                             </Badge>
                                             <div className="flex gap-1">
                                                 <button
                                                     onClick={() => handleDelete(item._id)}
-                                                    className="p-1.5 bg-red-500/20 hover:bg-red-500 text-white rounded-lg transition-colors border border-red-500/20"
+                                                    className="p-1.5 bg-red-500/80 hover:bg-red-500 text-white rounded-lg transition-colors backdrop-blur-md"
                                                     title="Delete Image"
                                                 >
                                                     <Trash size={12} />
@@ -211,10 +233,10 @@ const GalleryManager = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button className="bg-white/90 backdrop-blur-md p-1.5 rounded-full shadow-lg text-secondary border border-white/40">
+                                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                        <div className="bg-black/30 backdrop-blur-md p-1.5 rounded-full text-white/80 border border-white/10">
                                             <Maximize2 size={12} />
-                                        </button>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
@@ -228,7 +250,7 @@ const GalleryManager = () => {
                     <div className="bg-secondary px-8 py-6 flex items-center justify-between">
                         <div className="space-y-1">
                             <DialogTitle className="text-white flex items-center gap-2 text-xl font-extrabold tracking-tight">
-                                <ImageIcon className="w-5 h-5 text-pink-400" />
+                                <ImageIcon className="w-5 h-5 text-primary" />
                                 Portfolio Upload
                             </DialogTitle>
                             <DialogDescription className="text-slate-400 text-xs text-balance font-medium">
@@ -247,7 +269,7 @@ const GalleryManager = () => {
                                         value={formData.title}
                                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                         required
-                                        className="border-slate-200 focus:ring-indigo-500/20 h-11 bg-slate-50/50"
+                                        className="border-slate-200 focus:ring-primary/20 h-11 bg-slate-50/50"
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -255,7 +277,7 @@ const GalleryManager = () => {
                                     <select
                                         value={formData.category}
                                         onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                        className="w-full h-11 px-3 py-2 bg-slate-50/50 border border-slate-200 rounded-md text-sm ring-offset-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium text-slate-700"
+                                        className="w-full h-11 px-3 py-2 bg-slate-50/50 border border-slate-200 rounded-md text-sm ring-offset-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-slate-700"
                                     >
                                         {categories.filter(c => c !== "All").map(cat => (
                                             <option key={cat} value={cat}>{cat}</option>
@@ -266,28 +288,31 @@ const GalleryManager = () => {
 
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Visual Asset</Label>
-                                <div className="relative group min-h-[148px] h-full">
+                                <div className="relative group h-[160px]">
                                     <div className={cn(
-                                        "h-full bg-slate-50 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center p-4 transition-all duration-300 group-hover:bg-slate-100 group-hover:border-indigo-300",
+                                        "h-full bg-slate-50 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center p-4 transition-all duration-300 group-hover:bg-slate-100 group-hover:border-primary/50 cursor-pointer",
                                         imagePreview ? "border-emerald-200 bg-emerald-50/10" : "border-slate-200"
                                     )}>
                                         {imagePreview ? (
-                                            <div className="relative w-full h-full">
-                                                <img src={imagePreview} className="w-full h-24 object-cover rounded-lg shadow-sm" alt="Preview" />
+                                            <div className="relative w-full h-full group/preview">
+                                                <img src={imagePreview} className="w-full h-full object-cover rounded-lg shadow-sm" alt="Preview" />
                                                 <button
                                                     type="button"
                                                     onClick={(e) => { e.preventDefault(); setSelectedFile(null); setImagePreview(null); }}
-                                                    className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full shadow-lg hover:scale-110 transition-transform"
+                                                    className="absolute -top-2 -right-2 p-1.5 bg-red-500 text-white rounded-full shadow-lg hover:scale-110 transition-transform z-10"
                                                 >
                                                     <X size={12} />
                                                 </button>
-                                                <p className="text-[9px] text-center font-bold text-emerald-600 mt-2 flex items-center justify-center gap-1 uppercase tracking-tighter">
-                                                    Asset Ready For Upload
-                                                </p>
+                                                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover/preview:opacity-100 transition-opacity rounded-lg">
+                                                    <p className="text-[10px] text-center font-bold text-white uppercase tracking-tighter flex items-center gap-1">
+                                                        <CheckCircle className="w-3 h-3 text-emerald-400" />
+                                                        Ready
+                                                    </p>
+                                                </div>
                                             </div>
                                         ) : (
                                             <>
-                                                <div className="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center mb-2 text-indigo-500 border border-slate-100 group-hover:scale-110 transition-transform duration-300">
+                                                <div className="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center mb-2 text-slate-400 border border-slate-100 group-hover:scale-110 group-hover:text-primary transition-all duration-300">
                                                     <UploadCloud size={20} />
                                                 </div>
                                                 <p className="text-[10px] font-bold text-slate-600 text-center uppercase tracking-tighter">Drag Asset Here</p>
@@ -306,8 +331,8 @@ const GalleryManager = () => {
                             </div>
                         </div>
 
-                        <div className="flex flex-col gap-3 pt-4 border-t border-slate-100">
-                            <Button type="submit" className="w-full bg-secondary hover:bg-secondary/90 text-white h-12 font-extrabold shadow-xl shadow-slate-900/20 text-sm">
+                        <div className="flex flex-col gap-3 pt-4 border-t border-slate-100 mt-2">
+                            <Button type="submit" className="w-full bg-secondary hover:bg-secondary/90 text-white h-12 font-extrabold shadow-xl shadow-slate-900/10 text-sm">
                                 <Plus className="w-4 h-4 mr-2" />
                                 Add To Gallery
                             </Button>

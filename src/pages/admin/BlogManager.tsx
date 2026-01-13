@@ -11,7 +11,6 @@ import {
     Dialog,
     DialogContent,
     DialogDescription,
-    DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -19,9 +18,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Plus, Edit, Trash, Image as ImageIcon, Search, FileText, Calendar, MoreVertical, ExternalLink } from "lucide-react";
+import { Plus, Edit, Trash, Image as ImageIcon, Search, FileText, Calendar, MoreVertical, ExternalLink, CheckCircle, Clock } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -31,6 +30,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import api from "@/lib/api";
 import { cn } from "@/lib/utils";
+import StatsCard from "@/components/admin/StatsCard";
 
 interface Blog {
     _id: string;
@@ -130,28 +130,58 @@ const BlogManager = () => {
         blog.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    const publishedCount = blogs.filter(b => b.isPublished).length;
+    const draftCount = blogs.length - publishedCount;
+
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-10">
+            {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-extrabold tracking-tight text-secondary">Manage Blogs</h1>
+                    <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Manage Blogs</h1>
                     <p className="text-slate-500 text-sm">Create, edit, and manage your company blog posts.</p>
                 </div>
-                <Button onClick={() => handleOpenDialog()} className="bg-primary hover:bg-primary/90 shadow-md shadow-primary/20">
+                <Button onClick={() => handleOpenDialog()} className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all hover:scale-105">
                     <Plus className="mr-2 h-4 w-4" /> Add New Post
                 </Button>
             </div>
 
-            <Card className="border-none shadow-sm overflow-hidden bg-white/50 backdrop-blur-sm">
-                <CardHeader className="pb-0 border-b border-slate-100 bg-white/80">
-                    <div className="flex items-center gap-4 pb-4">
+            {/* Stats Summary */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <StatsCard
+                    title="Total Posts"
+                    value={blogs.length}
+                    icon={FileText}
+                    description="All time blog posts"
+                />
+                <StatsCard
+                    title="Published"
+                    value={publishedCount}
+                    icon={CheckCircle}
+                    className="border-emerald-100"
+                    trendDirection="up"
+                    trend={`${Math.round((publishedCount / (blogs.length || 1)) * 100)}%`}
+                    description="Live on site"
+                />
+                <StatsCard
+                    title="Drafts"
+                    value={draftCount}
+                    icon={Clock}
+                    description="Pending publication"
+                />
+            </div>
+
+            {/* Main Content Card */}
+            <Card className="border-slate-200/60 shadow-sm overflow-hidden bg-white/50 backdrop-blur-sm">
+                <CardHeader className="pb-0 border-b border-slate-100 bg-white/80 px-6 py-4">
+                    <div className="flex items-center gap-4">
                         <div className="relative flex-1 max-w-sm group">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
                             <Input
                                 placeholder="Search posts..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-9 bg-slate-50 border-slate-200 focus-visible:ring-indigo-500/30"
+                                className="pl-9 bg-slate-50 border-slate-200 focus-visible:ring-primary/30 transition-all"
                             />
                         </div>
                     </div>
@@ -203,37 +233,37 @@ const BlogManager = () => {
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <div className="flex flex-col gap-0.5">
-                                                <span className="font-bold text-slate-800 line-clamp-1">{blog.title}</span>
-                                                <span className="text-xs text-slate-400 line-clamp-1">{blog.content.substring(0, 100)}...</span>
+                                            <div className="flex flex-col gap-0.5 max-w-[400px]">
+                                                <span className="font-bold text-slate-800 line-clamp-1 group-hover:text-primary transition-colors">{blog.title}</span>
+                                                <span className="text-xs text-slate-400 line-clamp-1">{blog.content ? blog.content.substring(0, 100).replace(/<[^>]*>?/gm, '') : ''}...</span>
                                             </div>
                                         </TableCell>
                                         <TableCell>
                                             <Badge variant={blog.isPublished ? "default" : "secondary"} className={cn(
-                                                "font-medium px-2 py-0 h-6",
-                                                blog.isPublished ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-none" : "bg-slate-100 text-slate-600 hover:bg-slate-200 border-none"
+                                                "font-medium px-2 py-0.5 h-auto",
+                                                blog.isPublished ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-emerald-100" : "bg-slate-100 text-slate-600 hover:bg-slate-200 border-slate-200"
                                             )}>
                                                 {blog.isPublished ? "Published" : "Draft"}
                                             </Badge>
                                         </TableCell>
                                         <TableCell>
-                                            <div className="flex items-center gap-1.5 text-slate-500 text-xs">
-                                                <Calendar className="w-3 h-3" />
+                                            <div className="flex items-center gap-1.5 text-slate-500 text-xs font-medium">
+                                                <Calendar className="w-3.5 h-3.5 text-slate-400" />
                                                 {new Date(blog.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                                             </div>
                                         </TableCell>
                                         <TableCell className="text-right px-6">
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-200">
-                                                        <MoreVertical className="h-4 w-4 text-slate-500" />
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-200 text-slate-400 hover:text-slate-600">
+                                                        <MoreVertical className="h-4 w-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end" className="w-40">
                                                     <DropdownMenuItem onClick={() => handleOpenDialog(blog)} className="cursor-pointer">
                                                         <Edit className="mr-2 h-4 w-4" /> Edit Post
                                                     </DropdownMenuItem>
-                                                    <DropdownMenuItem className="cursor-pointer text-primary focus:text-indigo-700">
+                                                    <DropdownMenuItem className="cursor-pointer text-primary focus:text-primary/90">
                                                         <ExternalLink className="mr-2 h-4 w-4" /> View Live
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
@@ -252,11 +282,11 @@ const BlogManager = () => {
             </Card>
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent className="sm:max-w-2xl overflow-hidden p-0 border-none shadow-2xl">
+                <DialogContent className="sm:max-w-3xl overflow-hidden p-0 border-none shadow-2xl">
                     <div className="bg-secondary px-6 py-4 flex items-center justify-between">
                         <div className="space-y-1">
-                            <DialogTitle className="text-white flex items-center gap-2">
-                                <FileText className="w-5 h-5 text-indigo-400" />
+                            <DialogTitle className="text-white flex items-center gap-2 text-xl">
+                                <FileText className="w-5 h-5 text-primary" />
                                 {editingBlog ? "Edit Blog Post" : "Create New Post"}
                             </DialogTitle>
                             <DialogDescription className="text-slate-400 text-xs">
@@ -265,8 +295,8 @@ const BlogManager = () => {
                         </div>
                     </div>
                     <form onSubmit={handleSubmit} className="p-6 space-y-6 bg-white">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-6">
                                 <div className="space-y-2">
                                     <Label htmlFor="title" className="text-xs font-bold uppercase tracking-wider text-slate-500">Post Title</Label>
                                     <Input
@@ -274,7 +304,7 @@ const BlogManager = () => {
                                         placeholder="Enter a compelling title..."
                                         value={formData.title}
                                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                        className="border-slate-200 focus:ring-indigo-500/20"
+                                        className="border-slate-200 focus:ring-primary/20 h-10"
                                         required
                                     />
                                 </div>
@@ -282,7 +312,7 @@ const BlogManager = () => {
                                 <div className="space-y-2">
                                     <Label htmlFor="image" className="text-xs font-bold uppercase tracking-wider text-slate-500">Feature Image</Label>
                                     <div className="flex flex-col gap-3">
-                                        <div className="relative group overflow-hidden bg-slate-50 rounded-lg border border-dashed border-slate-200 aspect-video flex items-center justify-center transition-all hover:bg-slate-100 flex-col gap-2">
+                                        <div className="relative group overflow-hidden bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 aspect-video flex items-center justify-center transition-all hover:bg-slate-100 hover:border-primary/50 flex-col gap-2 cursor-pointer">
                                             {selectedFile ? (
                                                 <div className="absolute inset-0">
                                                     <img
@@ -291,7 +321,7 @@ const BlogManager = () => {
                                                         alt="Preview"
                                                     />
                                                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                        <span className="text-white text-xs font-medium">Click to change</span>
+                                                        <span className="text-white text-xs font-medium bg-black/50 px-3 py-1.5 rounded-full backdrop-blur-sm">Click to change</span>
                                                     </div>
                                                 </div>
                                             ) : editingBlog?.image ? (
@@ -302,13 +332,15 @@ const BlogManager = () => {
                                                         alt="Current"
                                                     />
                                                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                        <span className="text-white text-xs font-medium">Click to replace</span>
+                                                        <span className="text-white text-xs font-medium bg-black/50 px-3 py-1.5 rounded-full backdrop-blur-sm">Click to replace</span>
                                                     </div>
                                                 </div>
                                             ) : (
                                                 <>
-                                                    <ImageIcon className="w-8 h-8 text-slate-300" />
-                                                    <span className="text-slate-400 text-xs">Drop image or click to upload</span>
+                                                    <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                                        <ImageIcon className="w-6 h-6 text-slate-300 group-hover:text-primary transition-colors" />
+                                                    </div>
+                                                    <span className="text-slate-400 text-xs font-medium group-hover:text-slate-500">Click to upload image</span>
                                                 </>
                                             )}
                                             <input
@@ -319,7 +351,7 @@ const BlogManager = () => {
                                                 onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
                                             />
                                         </div>
-                                        <p className="text-[10px] text-slate-400">Recommended size: 1200x630px. Max 2MB.</p>
+                                        <p className="text-[10px] text-slate-400 text-center">Recommended size: 1200x630px. Max 2MB.</p>
                                     </div>
                                 </div>
                             </div>
@@ -330,42 +362,43 @@ const BlogManager = () => {
                                     <Textarea
                                         id="content"
                                         placeholder="Write your story here..."
-                                        rows={12}
                                         value={formData.content}
                                         onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                        className="border-slate-200 focus:ring-indigo-500/20 min-h-[300px] resize-none"
+                                        className="border-slate-200 focus:ring-primary/20 min-h-[300px] resize-none p-4 font-normal leading-relaxed"
                                         required
                                     />
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                            <div className="flex items-center space-x-3">
+                        <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-2">
+                            <div className="flex items-center space-x-3 bg-slate-50 px-3 py-2 rounded-lg border border-slate-200/50">
                                 <button
                                     type="button"
                                     onClick={() => setFormData({ ...formData, isPublished: !formData.isPublished })}
                                     className={cn(
-                                        "relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2",
-                                        formData.isPublished ? "bg-primary" : "bg-slate-200"
+                                        "relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+                                        formData.isPublished ? "bg-emerald-500" : "bg-slate-200"
                                     )}
                                 >
                                     <span
                                         className={cn(
-                                            "pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
+                                            "pointer-events-none inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
                                             formData.isPublished ? "translate-x-4" : "translate-x-1"
                                         )}
                                     />
                                 </button>
-                                <Label htmlFor="isPublished" className="text-sm font-medium text-slate-600">Publish immediately</Label>
+                                <Label htmlFor="isPublished" className="text-sm font-medium text-slate-600 cursor-pointer" onClick={() => setFormData({ ...formData, isPublished: !formData.isPublished })}>
+                                    {formData.isPublished ? "Publish Immediately" : "Save as Draft"}
+                                </Label>
                             </div>
 
                             <div className="flex items-center gap-3">
-                                <Button type="button" variant="ghost" onClick={() => setIsDialogOpen(false)} className="text-slate-500 h-10 px-6">
+                                <Button type="button" variant="ghost" onClick={() => setIsDialogOpen(false)} className="text-slate-500 h-10 px-6 hover:bg-slate-100 hover:text-slate-700">
                                     Cancel
                                 </Button>
-                                <Button type="submit" className="bg-secondary hover:bg-secondary/90 text-white h-10 px-8">
-                                    {editingBlog ? "Save Changes" : "Publish Post"}
+                                <Button type="submit" className="bg-secondary hover:bg-secondary/90 text-white h-10 px-8 shadow-lg shadow-secondary/10">
+                                    {editingBlog ? "Save Changes" : "Create Post"}
                                 </Button>
                             </div>
                         </div>

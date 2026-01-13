@@ -3,29 +3,29 @@ import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table";
 import {
-    Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter
+    Dialog, DialogContent, DialogTitle, DialogDescription
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
     Trash,
     Edit,
-    Users,
     ShieldAlert,
     ShieldCheck,
     User,
     Mail,
-    Calendar,
     Search,
     MoreVertical,
-    UserPlus,
     UserCog,
-    Fingerprint
+    Fingerprint,
+    Users,
+    UserPlus,
+    Lock
 } from "lucide-react";
 import {
     DropdownMenu,
@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import api from "@/lib/api";
 import { cn } from "@/lib/utils";
+import StatsCard from "@/components/admin/StatsCard";
 
 interface UserInfo {
     _id: string;
@@ -113,33 +114,60 @@ const UserManagement = () => {
         user.email.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    // Stats
+    const totalUsers = users.length;
+    const superAdmins = users.filter(u => u.role === 'super-admin').length;
+    const recentUsers = users.slice(0, 5).length; // Placeholder
+
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-10">
+            {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-extrabold tracking-tight text-secondary">User Governance</h1>
-                    <div className="flex items-center gap-2 text-slate-500 text-sm">
-                        <ShieldAlert className="w-4 h-4 text-primary" />
-                        <span>Manage administrative access and role assignments.</span>
-                    </div>
+                    <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">User Governance</h1>
+                    <p className="text-slate-500 text-sm">Manage administrative access and role assignments.</p>
                 </div>
-                <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="bg-primary/10/50 text-primary border-primary/20 hidden sm:flex">
-                        {users.length} Active Personnel
-                    </Badge>
-                </div>
+                <Button className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all hover:scale-105" disabled>
+                    <UserPlus className="mr-2 h-4 w-4" /> Invite Admin
+                </Button>
             </div>
 
-            <Card className="border-none shadow-sm overflow-hidden bg-white/50 backdrop-blur-sm">
-                <CardHeader className="pb-0 border-b border-slate-100 bg-white/80">
-                    <div className="flex items-center gap-4 pb-4">
+            {/* Stats Summary */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <StatsCard
+                    title="Active Personnel"
+                    value={totalUsers}
+                    icon={Users}
+                    description="Total system accounts"
+                />
+                <StatsCard
+                    title="Super Administrators"
+                    value={superAdmins}
+                    icon={ShieldCheck}
+                    className="border-indigo-100"
+                    description="Highest privilege level"
+                />
+                <StatsCard
+                    title="Security Status"
+                    value="Optimal"
+                    icon={Lock}
+                    className="border-emerald-100"
+                    description="No alerts detected"
+                    trendDirection="neutral"
+                />
+            </div>
+
+            {/* Main Content */}
+            <Card className="border-slate-200/60 shadow-sm overflow-hidden bg-white/50 backdrop-blur-sm">
+                <CardHeader className="pb-0 border-b border-slate-100 bg-white/80 px-6 py-4">
+                    <div className="flex items-center gap-4">
                         <div className="relative flex-1 max-w-sm group">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
                             <Input
                                 placeholder="Search by name or email..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-9 bg-slate-50 border-slate-200 focus-visible:ring-indigo-500/30 font-medium"
+                                className="pl-9 bg-slate-50 border-slate-200 focus-visible:ring-primary/30 font-medium h-10 transition-all"
                             />
                         </div>
                     </div>
@@ -148,10 +176,10 @@ const UserManagement = () => {
                     <Table>
                         <TableHeader>
                             <TableRow className="bg-slate-50/50 hover:bg-slate-50/50 border-slate-100">
+                                <TableHead className="w-[60px]"></TableHead>
                                 <TableHead className="font-bold text-slate-700">Administrator</TableHead>
                                 <TableHead className="font-bold text-slate-700">Email Address</TableHead>
                                 <TableHead className="font-bold text-slate-700">Access Level</TableHead>
-                                <TableHead className="font-bold text-slate-700">Registration</TableHead>
                                 <TableHead className="text-right font-bold text-slate-700 px-6">Control</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -159,9 +187,9 @@ const UserManagement = () => {
                             {loading ? (
                                 Array(3).fill(0).map((_, i) => (
                                     <TableRow key={i} className="animate-pulse">
-                                        <TableCell><div className="h-10 bg-slate-100 rounded w-40"></div></TableCell>
+                                        <TableCell><div className="w-10 h-10 bg-slate-100 rounded-full mx-auto"></div></TableCell>
+                                        <TableCell><div className="h-4 bg-slate-100 rounded w-32"></div></TableCell>
                                         <TableCell><div className="h-4 bg-slate-100 rounded w-48"></div></TableCell>
-                                        <TableCell><div className="h-6 bg-slate-100 rounded w-20"></div></TableCell>
                                         <TableCell><div className="h-4 bg-slate-100 rounded w-20"></div></TableCell>
                                         <TableCell className="text-right"><div className="h-8 bg-slate-100 rounded-full w-8 ml-auto"></div></TableCell>
                                     </TableRow>
@@ -180,21 +208,21 @@ const UserManagement = () => {
                                 filteredUsers.map((user) => (
                                     <TableRow key={user._id} className="group hover:bg-slate-50/80 transition-colors border-slate-50">
                                         <TableCell>
-                                            <div className="flex items-center gap-3">
-                                                <div className={cn(
-                                                    "w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ring-2 ring-white shadow-sm",
-                                                    user.role === 'super-admin'
-                                                        ? "bg-primary text-white"
-                                                        : "bg-slate-200 text-slate-600"
-                                                )}>
-                                                    {user.name.charAt(0).toUpperCase()}
-                                                </div>
-                                                <span className="font-bold text-secondary">{user.name}</span>
+                                            <div className={cn(
+                                                "w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ring-2 ring-white shadow-sm mx-auto",
+                                                user.role === 'super-admin'
+                                                    ? "bg-primary text-white"
+                                                    : "bg-slate-200 text-slate-600"
+                                            )}>
+                                                {user.name.charAt(0).toUpperCase()}
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <div className="text-slate-500 font-medium flex items-center gap-2">
-                                                <Mail className="w-3.5 h-3.5" />
+                                            <span className="font-bold text-slate-900">{user.name}</span>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="text-slate-500 font-medium flex items-center gap-2 text-sm">
+                                                <Mail className="w-3.5 h-3.5 text-slate-400" />
                                                 {user.email}
                                             </div>
                                         </TableCell>
@@ -202,41 +230,35 @@ const UserManagement = () => {
                                             <Badge
                                                 variant="outline"
                                                 className={cn(
-                                                    "font-bold px-2 py-0.5 h-6 text-[10px] uppercase border",
+                                                    "font-bold px-2.5 py-0.5 h-6 text-[10px] uppercase border tracking-wider",
                                                     user.role === 'super-admin'
-                                                        ? "bg-primary/10 text-indigo-700 border-primary/20"
+                                                        ? "bg-primary/10 text-primary border-primary/20"
                                                         : "bg-slate-100 text-slate-600 border-slate-200"
                                                 )}
                                             >
                                                 {user.role === 'super-admin' ? (
-                                                    <ShieldCheck className="w-3 h-3 mr-1" />
+                                                    <ShieldCheck className="w-3 h-3 mr-1.5" />
                                                 ) : (
-                                                    <ShieldAlert className="w-3 h-3 mr-1 opacity-50" />
+                                                    <ShieldAlert className="w-3 h-3 mr-1.5 opacity-50" />
                                                 )}
                                                 {user.role}
                                             </Badge>
                                         </TableCell>
-                                        <TableCell>
-                                            <div className="text-slate-500 text-xs flex items-center gap-1.5 font-medium">
-                                                <Calendar className="w-3.5 h-3.5" />
-                                                {new Date(user.createdAt).toLocaleDateString()}
-                                            </div>
-                                        </TableCell>
                                         <TableCell className="text-right px-6">
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-200">
-                                                        <MoreVertical className="h-4 w-4 text-slate-500" />
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-200 text-slate-400 hover:text-slate-600">
+                                                        <MoreVertical className="h-4 w-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end" className="w-48">
-                                                    <DropdownMenuItem onClick={() => handleOpenDialog(user)} className="cursor-pointer">
-                                                        <Edit className="mr-2 h-4 w-4" /> Edit Permissions
+                                                    <DropdownMenuItem onClick={() => handleOpenDialog(user)} className="cursor-pointer font-medium">
+                                                        <Edit className="mr-2 h-4 w-4 text-slate-400" /> Edit Permissions
                                                     </DropdownMenuItem>
                                                     {user.role !== 'super-admin' && (
                                                         <>
                                                             <DropdownMenuSeparator />
-                                                            <DropdownMenuItem onClick={() => handleDelete(user._id)} className="cursor-pointer text-red-600 focus:text-red-700 focus:bg-red-50">
+                                                            <DropdownMenuItem onClick={() => handleDelete(user._id)} className="cursor-pointer text-red-600 focus:text-red-700 focus:bg-red-50 font-medium">
                                                                 <Trash className="mr-2 h-4 w-4" /> Revoke Access
                                                             </DropdownMenuItem>
                                                         </>
@@ -276,7 +298,7 @@ const UserManagement = () => {
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     required
-                                    className="border-slate-200 focus:ring-indigo-500/20 h-11 bg-slate-50/50 font-medium"
+                                    className="border-slate-200 focus:ring-primary/20 h-11 bg-slate-50/50 font-medium"
                                 />
                             </div>
                             <div className="space-y-2">
@@ -288,7 +310,7 @@ const UserManagement = () => {
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                     required
-                                    className="border-slate-200 focus:ring-indigo-500/20 h-11 bg-slate-50/50 font-medium"
+                                    className="border-slate-200 focus:ring-primary/20 h-11 bg-slate-50/50 font-medium"
                                 />
                             </div>
                             <div className="space-y-2">
@@ -299,7 +321,7 @@ const UserManagement = () => {
                                     value={formData.role}
                                     onValueChange={(value) => setFormData({ ...formData, role: value })}
                                 >
-                                    <SelectTrigger className="border-slate-200 focus:ring-indigo-500/20 h-11 bg-slate-50/50 font-bold">
+                                    <SelectTrigger className="border-slate-200 focus:ring-primary/20 h-11 bg-slate-50/50 font-bold">
                                         <SelectValue placeholder="Select role" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -317,8 +339,8 @@ const UserManagement = () => {
                             </div>
                         </div>
 
-                        <div className="flex flex-col gap-3 pt-4 border-t border-slate-100">
-                            <Button type="submit" className="w-full bg-secondary hover:bg-secondary/90 text-white h-12 font-extrabold shadow-xl shadow-slate-900/20 text-sm transition-all focus:scale-[0.98]">
+                        <div className="flex flex-col gap-3 pt-4 border-t border-slate-100 mt-2">
+                            <Button type="submit" className="w-full bg-secondary hover:bg-secondary/90 text-white h-12 font-extrabold shadow-xl shadow-slate-900/10 text-sm transition-all focus:scale-[0.98]">
                                 <ShieldCheck className="w-4 h-4 mr-2" />
                                 Commit Permission Changes
                             </Button>

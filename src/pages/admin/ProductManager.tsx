@@ -3,14 +3,14 @@ import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table";
 import {
-    Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription
+    Dialog, DialogContent, DialogDescription, DialogTitle
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -19,9 +19,10 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
-import { Plus, Edit, Trash, Package, Search, MoreVertical, Star, Layers, ImageIcon, X, ChevronRight, LayoutGrid } from "lucide-react";
+import { Plus, Edit, Trash, Package, Search, MoreVertical, Star, Layers, ImageIcon, LayoutGrid, Tag, CheckSquare } from "lucide-react";
 import api from "@/lib/api";
 import { cn } from "@/lib/utils";
+import StatsCard from "@/components/admin/StatsCard";
 
 interface Product {
     _id: string;
@@ -128,31 +129,57 @@ const ProductManager = () => {
         product.category.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    const featuredCount = products.filter(p => p.isFeatured).length;
+    const categories = new Set(products.map(p => p.category)).size;
+
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-10">
+            {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-extrabold tracking-tight text-secondary">Product Catalog</h1>
-                    <div className="flex items-center gap-2 text-slate-500 text-sm">
-                        <Package className="w-4 h-4" />
-                        <span>Manage your export product inventory and featured items.</span>
-                    </div>
+                    <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Product Catalog</h1>
+                    <p className="text-slate-500 text-sm">Manage your export product inventory and featured items.</p>
                 </div>
-                <Button onClick={() => handleOpenDialog()} className="bg-primary hover:bg-primary/90 shadow-md shadow-blue-600/20">
+                <Button onClick={() => handleOpenDialog()} className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all hover:scale-105">
                     <Plus className="mr-2 h-4 w-4" /> Add New Product
                 </Button>
             </div>
 
-            <Card className="border-none shadow-sm overflow-hidden bg-white/50 backdrop-blur-sm">
-                <CardHeader className="pb-0 border-b border-slate-100 bg-white/80">
-                    <div className="flex items-center gap-4 pb-4">
+            {/* Stats Summary */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <StatsCard
+                    title="Total Products"
+                    value={products.length}
+                    icon={Package}
+                    description="Items in catalog"
+                />
+                <StatsCard
+                    title="Featured Items"
+                    value={featuredCount}
+                    icon={Star}
+                    className="border-amber-100"
+                    trendDirection="neutral"
+                    description="Highlight on home"
+                />
+                <StatsCard
+                    title="Categories"
+                    value={categories}
+                    icon={Tag}
+                    description="Product segments"
+                />
+            </div>
+
+            {/* Main Content Card */}
+            <Card className="border-slate-200/60 shadow-sm overflow-hidden bg-white/50 backdrop-blur-sm">
+                <CardHeader className="pb-0 border-b border-slate-100 bg-white/80 px-6 py-4">
+                    <div className="flex items-center gap-4">
                         <div className="relative flex-1 max-w-sm group">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
                             <Input
                                 placeholder="Search by name or category..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-9 bg-slate-50 border-slate-200 focus-visible:ring-blue-500/30"
+                                className="pl-9 bg-slate-50 border-slate-200 focus-visible:ring-primary/30 transition-all"
                             />
                         </div>
                     </div>
@@ -205,20 +232,21 @@ const ProductManager = () => {
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex flex-col gap-0.5">
-                                                <span className="font-bold text-slate-800">{product.name}</span>
-                                                <span className="text-xs text-slate-400 line-clamp-1 max-w-xs">{product.description}</span>
+                                                <span className="font-bold text-slate-800 group-hover:text-primary transition-colors">{product.name}</span>
+                                                <span className="text-xs text-slate-400 line-clamp-1 max-w-xs">{product.description.substring(0, 60)}...</span>
                                             </div>
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-1.5">
-                                                <Layers className="w-3 h-3 text-slate-400" />
-                                                <span className="text-sm text-slate-600 font-medium">{product.category}</span>
+                                                <div className="px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 text-xs font-medium border border-slate-200">
+                                                    {product.category}
+                                                </div>
                                             </div>
                                         </TableCell>
                                         <TableCell className="text-center">
                                             {product.isFeatured ? (
-                                                <Badge className="bg-amber-50 text-amber-600 hover:bg-amber-100 border-amber-100 px-2 py-0 h-6">
-                                                    <Star className="w-3 h-3 mr-1 fill-amber-500" />
+                                                <Badge className="bg-amber-50 text-amber-600 hover:bg-amber-100 border-amber-100 px-2.5 py-0.5 h-auto shadow-sm shadow-amber-100">
+                                                    <Star className="w-3 h-3 mr-1.5 fill-amber-500 text-amber-500" />
                                                     Featured
                                                 </Badge>
                                             ) : (
@@ -228,8 +256,8 @@ const ProductManager = () => {
                                         <TableCell className="text-right px-6">
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-200">
-                                                        <MoreVertical className="h-4 w-4 text-slate-500" />
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-200 text-slate-400 hover:text-slate-600">
+                                                        <MoreVertical className="h-4 w-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end" className="w-40">
@@ -252,11 +280,11 @@ const ProductManager = () => {
             </Card>
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent className="sm:max-w-2xl overflow-hidden p-0 border-none shadow-2xl">
+                <DialogContent className="sm:max-w-3xl overflow-hidden p-0 border-none shadow-2xl">
                     <div className="bg-secondary px-6 py-4 flex items-center justify-between">
                         <div className="space-y-1">
                             <DialogTitle className="text-white flex items-center gap-2 text-xl font-bold">
-                                <Package className="w-5 h-5 text-blue-400" />
+                                <Package className="w-5 h-5 text-primary" />
                                 {editingProduct ? "Update Product" : "New Inventory Item"}
                             </DialogTitle>
                             <DialogDescription className="text-slate-400 text-xs">
@@ -265,8 +293,8 @@ const ProductManager = () => {
                         </div>
                     </div>
                     <form onSubmit={handleSubmit} className="p-6 space-y-6 bg-white">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-6">
                                 <div className="space-y-2">
                                     <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Product Identity</Label>
                                     <Input
@@ -274,7 +302,7 @@ const ProductManager = () => {
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         required
-                                        className="border-slate-200 focus:ring-blue-500/20"
+                                        className="border-slate-200 focus:ring-primary/20 h-10"
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -284,13 +312,13 @@ const ProductManager = () => {
                                         value={formData.category}
                                         onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                                         required
-                                        className="border-slate-200 focus:ring-blue-500/20"
+                                        className="border-slate-200 focus:ring-primary/20 h-10"
                                     />
                                 </div>
                                 <div className="space-y-2">
                                     <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Visual Assets (Multi-upload)</Label>
-                                    <div className="relative group min-h-[140px] bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center p-4 transition-all hover:bg-slate-100 hover:border-blue-300">
-                                        <LayoutGrid className="w-8 h-8 text-slate-300 mb-2" />
+                                    <div className="relative group min-h-[160px] bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center p-4 transition-all hover:bg-slate-100 hover:border-primary/50 cursor-pointer">
+                                        <LayoutGrid className="w-8 h-8 text-slate-300 mb-2 group-hover:text-primary transition-colors" />
                                         <p className="text-xs font-medium text-slate-500">Select up to 5 images</p>
                                         <p className="text-[10px] text-slate-400 mt-1">Drag and drop or click to browse</p>
                                         <Input
@@ -311,29 +339,28 @@ const ProductManager = () => {
                                 </div>
                             </div>
 
-                            <div className="space-y-4">
+                            <div className="space-y-6">
                                 <div className="space-y-2">
                                     <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Detailed Description</Label>
                                     <Textarea
                                         placeholder="Technical specifications, origin, and quality standards..."
-                                        rows={8}
                                         value={formData.description}
                                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                         required
-                                        className="border-slate-200 focus:ring-blue-500/20 resize-none h-[210px]"
+                                        className="border-slate-200 focus:ring-primary/20 resize-none h-[210px] p-4 leading-relaxed"
                                     />
                                 </div>
 
                                 <div
                                     className={cn(
                                         "flex items-center justify-between p-4 rounded-xl border transition-all cursor-pointer",
-                                        formData.isFeatured ? "bg-amber-50/50 border-amber-200" : "bg-slate-50 border-slate-100"
+                                        formData.isFeatured ? "bg-amber-50/50 border-amber-200" : "bg-slate-50 border-slate-100 hover:border-slate-200"
                                     )}
                                     onClick={() => setFormData({ ...formData, isFeatured: !formData.isFeatured })}
                                 >
                                     <div className="flex items-center gap-3">
                                         <div className={cn(
-                                            "w-10 h-10 rounded-full flex items-center justify-center",
+                                            "w-10 h-10 rounded-full flex items-center justify-center transition-colors",
                                             formData.isFeatured ? "bg-amber-100 text-amber-600" : "bg-slate-200 text-slate-400"
                                         )}>
                                             <Star className={cn("w-5 h-5", formData.isFeatured && "fill-amber-500")} />
@@ -356,11 +383,11 @@ const ProductManager = () => {
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-end gap-3 pt-6 border-t border-slate-100">
-                            <Button type="button" variant="ghost" onClick={() => setIsDialogOpen(false)} className="text-slate-500 px-6">
+                        <div className="flex items-center justify-end gap-3 pt-6 border-t border-slate-100 mt-2">
+                            <Button type="button" variant="ghost" onClick={() => setIsDialogOpen(false)} className="text-slate-500 px-6 hover:bg-slate-100">
                                 Cancel
                             </Button>
-                            <Button type="submit" className="bg-secondary hover:bg-secondary/90 text-white px-8 min-w-[140px] shadow-lg shadow-slate-900/10">
+                            <Button type="submit" className="bg-secondary hover:bg-secondary/90 text-white px-8 min-w-[140px] shadow-lg shadow-secondary/10">
                                 {editingProduct ? "Update Catalog" : "Add to Catalog"}
                             </Button>
                         </div>
