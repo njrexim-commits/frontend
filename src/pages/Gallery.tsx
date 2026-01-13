@@ -11,6 +11,7 @@ const Gallery = () => {
   const [galleryImages, setGalleryImages] = useState<any[]>([]);
   const [pageContent, setPageContent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
 
 
@@ -49,7 +50,6 @@ const Gallery = () => {
   if (loading) return <Loader />;
 
   const categories = ["All", ...Array.from(new Set(galleryImages.map(img => img.category)))];
-  const [selectedCategory, setSelectedCategory] = useState("All");
 
   const filteredImages = selectedCategory === "All"
     ? galleryImages

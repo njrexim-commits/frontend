@@ -115,45 +115,47 @@ const Blog = () => {
       </section>
 
       {/* Featured Post */}
-      <section className="section-padding bg-background">
-        <div className="container-custom">
-          <h2 className="text-2xl font-bold text-foreground mb-8">Featured Article</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-card rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300">
-            <div className="aspect-video lg:aspect-auto overflow-hidden">
-              <img
-                src={featuredPost.image}
-                alt={featuredPost.title}
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-            <div className="p-8 lg:p-12 flex flex-col justify-center">
-              <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-sm font-medium rounded-full mb-4 w-fit">
-                {featuredPost.category}
-              </span>
-              <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4 hover:text-primary transition-colors">
-                {featuredPost.title}
-              </h3>
-              <p className="text-muted-foreground mb-6 leading-relaxed">
-                {featuredPost.excerpt}
-              </p>
-              <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  {new Date(featuredPost.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
-                  {featuredPost.readTime}
-                </div>
+      {featuredPost && (
+        <section className="section-padding bg-background">
+          <div className="container-custom">
+            <h2 className="text-2xl font-bold text-foreground mb-8">Featured Article</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-card rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300">
+              <div className="aspect-video lg:aspect-auto overflow-hidden">
+                <img
+                  src={featuredPost.image}
+                  alt={featuredPost.title}
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                />
               </div>
-              <button className="inline-flex items-center gap-2 text-primary font-semibold hover:gap-4 transition-all">
-                Read Article
-                <ArrowRight className="w-5 h-5" />
-              </button>
+              <div className="p-8 lg:p-12 flex flex-col justify-center">
+                <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-sm font-medium rounded-full mb-4 w-fit">
+                  {featuredPost.category}
+                </span>
+                <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4 hover:text-primary transition-colors">
+                  {featuredPost.title}
+                </h3>
+                <p className="text-muted-foreground mb-6 leading-relaxed">
+                  {featuredPost.excerpt}
+                </p>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4" />
+                    {new Date(featuredPost.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4" />
+                    {featuredPost.readTime}
+                  </div>
+                </div>
+                <button className="inline-flex items-center gap-2 text-primary font-semibold hover:gap-4 transition-all">
+                  Read Article
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Category Filter */}
       <section className="py-8 bg-muted border-y border-border">
