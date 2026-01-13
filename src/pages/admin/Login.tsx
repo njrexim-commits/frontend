@@ -67,6 +67,11 @@ const AdminLogin = () => {
                                 required
                             />
                         </div>
+                        <div className="text-right">
+                            <a href="/admin/forgot-password" className="text-sm text-blue-600 hover:text-blue-800">
+                                Forgot Password?
+                            </a>
+                        </div>
                     </CardContent>
                     <CardFooter>
                         <Button className="w-full" type="submit" disabled={loading}>
