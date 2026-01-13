@@ -25,6 +25,7 @@ import UserManagement from "./pages/admin/UserManagement";
 import Settings from "./pages/admin/Settings";
 import Setup from "./pages/admin/Setup";
 import PageManager from "./pages/admin/PageManager";
+import TestimonialManager from "./pages/admin/TestimonialManager";
 
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -58,6 +59,7 @@ const App = () => (
             <Route path="gallery" element={<GalleryManager />} />
             <Route path="inquiries" element={<InquiryManager />} />
             <Route path="users" element={<UserManagement />} />
+            <Route path="testimonials" element={<TestimonialManager />} />
             <Route path="settings" element={<Settings />} />
             <Route path="pages" element={<PageManager />} />
           </Route>

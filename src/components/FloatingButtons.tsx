@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { MessageCircle, ArrowUp } from "lucide-react";
 import { Button } from "./ui/button";
+import TestimonialButton from "./TestimonialButton";
 
 const FloatingButtons = () => {
     const [showScrollTop, setShowScrollTop] = useState(false);
@@ -30,7 +31,10 @@ const FloatingButtons = () => {
     };
 
     return (
-        <div className="fixed bottom-6 right-6 flex flex-col gap-4 z-50">
+        <div className="fixed bottom-6 right-6 flex flex-col gap-4 z-50 items-center">
+            {/* Testimonial Button */}
+            <TestimonialButton />
+
             {/* WhatsApp Button */}
             <Button
                 onClick={openWhatsApp}

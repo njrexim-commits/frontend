@@ -6,7 +6,7 @@ import ProductsSection from "@/components/home/ProductsSection";
 import FeaturesSection from "@/components/home/FeaturesSection";
 import WhyUsSection from "@/components/home/WhyUsSection";
 import VideoBanner from "@/components/home/VideoBanner";
-import TestimonialsSection from "@/components/home/TestimonialsSection";
+import TestimonialsSection from "@/components/TestimonialsSection";
 import FAQSection from "@/components/home/FAQSection";
 import { useState, useEffect } from "react";
 import api from "@/lib/api";

@@ -8,6 +8,7 @@ import {
     Award,
     Image as ImageIcon,
     MessageSquare,
+    MessageSquareQuote,
     Monitor,
     Users,
     ShieldAlert,
@@ -49,6 +50,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, isMobile, userInfo, handleLogout
             title: "Management",
             items: [
                 { title: "Inquiries", icon: MessageSquare, path: "/admin/inquiries" },
+                { title: "Testimonials", icon: MessageSquareQuote, path: "/admin/testimonials" },
                 { title: "Pages", icon: Monitor, path: "/admin/pages" }
             ]
         },
