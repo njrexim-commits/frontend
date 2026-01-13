@@ -87,17 +87,18 @@ const About = () => {
   })) : defaultValues;
 
   const getSafeHero = () => {
-    if (!content?.hero) return {
+    const defaultHero = {
       badge: "About NJR Exim",
       title: "Your Trusted Partner in Global Trade",
       description: "With years of experience in international trade, we've built a reputation for delivering premium agricultural and food products to markets across the globe."
     };
-    return content.hero;
+    if (!content?.hero) return defaultHero;
+    return { ...defaultHero, ...content.hero };
   };
   const hero = getSafeHero();
 
   const getSafeStory = () => {
-    if (!content?.story) return {
+    const defaultStory = {
       badge: "Our Story",
       title: "Building Bridges Between Markets",
       content: [
@@ -109,7 +110,13 @@ const About = () => {
       statValue: "100%",
       statLabel: "Customer Satisfaction"
     };
-    return content.story;
+
+    if (!content?.story) return defaultStory;
+
+    // Ensure content.story.content is an array
+    const storyContent = Array.isArray(content.story.content) ? content.story.content : defaultStory.content;
+
+    return { ...defaultStory, ...content.story, content: storyContent };
   };
   const story = getSafeStory();
 
@@ -183,7 +190,7 @@ const About = () => {
                   <TrendingUp className="w-12 h-12 mx-auto mb-3" />
                   <span className="block text-3xl font-bold">{story.statValue}</span>
                   <span className="text-sm uppercase tracking-wider opacity-90">
-                    {story.statLabel.split(' ').map((word, i) => (
+                    {(story.statLabel || "Customer Satisfaction").split(' ').map((word, i) => (
                       <span key={i}>{word}{i === 0 && <br />}</span>
                     ))}
                   </span>
