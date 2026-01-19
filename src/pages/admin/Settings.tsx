@@ -35,6 +35,10 @@ const Settings = () => {
         contactEmail: "",
         contactPhone: "",
         address: "",
+        city: "",
+        state: "",
+        pincode: "",
+        country: "",
         facebookUrl: "",
         twitterUrl: "",
         linkedinUrl: "",
@@ -50,6 +54,10 @@ const Settings = () => {
                 contactEmail: data.contactEmail || "",
                 contactPhone: data.contactPhone || "",
                 address: data.address || "",
+                city: data.city || "",
+                state: data.state || "",
+                pincode: data.pincode || "",
+                country: data.country || "",
                 facebookUrl: data.facebookUrl || "",
                 twitterUrl: data.twitterUrl || "",
                 linkedinUrl: data.linkedinUrl || "",
@@ -212,16 +220,51 @@ const Settings = () => {
                                         placeholder="+1 (555) 000-0000"
                                     />
                                 </div>
-                                <div className="space-y-2 md:col-span-2">
-                                    <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 flex items-center gap-2">
-                                        <MapPin className="w-3 h-3 text-slate-400" /> Registered Headquarters
-                                    </Label>
-                                    <Textarea
-                                        value={formData.address}
-                                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                        className="min-h-[100px] border-slate-200 focus:ring-primary/20 bg-slate-50/50 font-medium resize-y"
-                                        placeholder="Street, City, State, ZIP, Country"
-                                    />
+                                <div className="space-y-4 md:col-span-2">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <MapPin className="w-4 h-4 text-slate-400" />
+                                        <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                                            Corporate Address
+                                        </Label>
+                                    </div>
+                                    <div className="grid gap-4">
+                                        <div className="col-span-full">
+                                            <Input
+                                                value={formData.address}
+                                                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                                className="border-slate-200 focus:ring-primary/20 h-11 bg-slate-50/50 font-medium"
+                                                placeholder="Street Address / Building Name"
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <Input
+                                                value={formData.city}
+                                                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                                                className="border-slate-200 focus:ring-primary/20 h-11 bg-slate-50/50 font-medium"
+                                                placeholder="City"
+                                            />
+                                            <Input
+                                                value={formData.state}
+                                                onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                                                className="border-slate-200 focus:ring-primary/20 h-11 bg-slate-50/50 font-medium"
+                                                placeholder="State / Province"
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <Input
+                                                value={formData.pincode}
+                                                onChange={(e) => setFormData({ ...formData, pincode: e.target.value })}
+                                                className="border-slate-200 focus:ring-primary/20 h-11 bg-slate-50/50 font-medium"
+                                                placeholder="Postal / Zip Code"
+                                            />
+                                            <Input
+                                                value={formData.country}
+                                                onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                                                className="border-slate-200 focus:ring-primary/20 h-11 bg-slate-50/50 font-medium"
+                                                placeholder="Country"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </CardContent>

@@ -98,28 +98,7 @@ const Contact = () => {
     }
   };
 
-  const defaultContactInfo = [
-    {
-      icon: MapPin,
-      title: "Visit Us",
-      details: ["E 109, Girija Marvel, Friends colony,", "Chanda Nagar, Hyderabad, Pin code 500050"],
-    },
-    {
-      icon: Phone,
-      title: "Call Us",
-      details: ["+91 123 456 7890", "+91 098 765 4321"],
-    },
-    {
-      icon: Mail,
-      title: "Email Us",
-      details: ["info@njrexim.com", "sales@njrexim.com"],
-    },
-    {
-      icon: Clock,
-      title: "Working Hours",
-      details: ["Monday - Friday: 9:00 AM - 6:00 PM", "Saturday: 9:00 AM - 1:00 PM"],
-    },
-  ];
+
 
   if (loading && !content) return <Loader />;
 
@@ -135,20 +114,21 @@ const Contact = () => {
     {
       icon: MapPin,
       title: "Visit Us",
+
       details: [
-        `${settings.address || "123 Export Zone, Industrial Area"}`,
-        `${settings.city || "Mumbai"}, ${settings.state || "Maharashtra"} ${settings.pincode || "400001"}, ${settings.country || "India"}`
+        `${settings.address}`,
+        `${settings.city}, ${settings.state} ${settings.pincode}, ${settings.country}`
       ]
     },
     {
       icon: Phone,
       title: "Call Us",
-      details: [settings.phone || "+91 123 456 7890", settings.alternatePhone || "+91 098 765 4321"].filter(Boolean)
+      details: [settings.contactPhone || "+91 123 456 7890" /*, settings.alternatePhone */].filter(Boolean)
     },
     {
       icon: Mail,
       title: "Email Us",
-      details: [settings.email || "info@njrexim.com", settings.alternateEmail || "sales@njrexim.com"].filter(Boolean)
+      details: [settings.contactEmail || "info@njrexim.com" /*, settings.alternateEmail */].filter(Boolean)
     },
     {
       icon: Clock,
@@ -156,11 +136,16 @@ const Contact = () => {
       details: settings.workingHours || ["Monday - Friday: 9:00 AM - 6:00 PM", "Saturday: 9:00 AM - 1:00 PM"]
     },
   ] : (info ? [
-    { icon: MapPin, title: "Visit Us", details: info.address },
-    { icon: Phone, title: "Call Us", details: info.phones },
-    { icon: Mail, title: "Email Us", details: info.emails },
-    { icon: Clock, title: "Working Hours", details: info.workingHours },
-  ] : defaultContactInfo);
+    { icon: MapPin, title: "Visit Us", details: info.address || ["Address details unavailable"] },
+    { icon: Phone, title: "Call Us", details: info.phones || ["Phone unavailable"] },
+    { icon: Mail, title: "Email Us", details: info.emails || ["Email unavailable"] },
+    { icon: Clock, title: "Working Hours", details: info.workingHours || ["Working hours unavailable"] },
+  ] : [
+    { icon: MapPin, title: "Visit Us", details: ["Address details unavailable"] },
+    { icon: Phone, title: "Call Us", details: ["Phone unavailable"] },
+    { icon: Mail, title: "Email Us", details: ["Email unavailable"] },
+    { icon: Clock, title: "Working Hours", details: ["Working hours unavailable"] },
+  ]);
 
   return (
     <Layout>
