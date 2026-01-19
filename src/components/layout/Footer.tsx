@@ -125,20 +125,26 @@ const Footer = () => {
                 <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
                   <Phone className="w-5 h-5 text-primary" />
                 </div>
-                <div className="flex flex-col">
-                  <a
-                    href={`tel:${settings?.contactPhone}`}
-                    className="text-white/70 hover:text-golden transition-colors"
-                  >
-                    {settings?.contactPhone}
-                  </a>
-                  {settings?.alternatePhone && (
+                <div className="flex flex-col gap-0.5">
+                  <div className="flex items-center gap-2">
+                    <span className="text-white/40 text-[10px] uppercase font-bold tracking-wider">Hotline:</span>
                     <a
-                      href={`tel:${settings?.alternatePhone}`}
-                      className="text-white/70 hover:text-golden transition-colors"
+                      href={`tel:${settings?.contactPhone}`}
+                      className="text-white/70 hover:text-golden transition-colors text-sm"
                     >
-                      {settings?.alternatePhone}
+                      {settings?.contactPhone}
                     </a>
+                  </div>
+                  {settings?.alternatePhone && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-white/40 text-[10px] uppercase font-bold tracking-wider">Mobile:</span>
+                      <a
+                        href={`tel:${settings?.alternatePhone}`}
+                        className="text-white/70 hover:text-golden transition-colors text-sm"
+                      >
+                        {settings?.alternatePhone}
+                      </a>
+                    </div>
                   )}
                 </div>
               </li>
