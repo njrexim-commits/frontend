@@ -102,7 +102,7 @@ const Contact = () => {
     {
       icon: MapPin,
       title: "Visit Us",
-      details: ["123 Export Zone, Industrial Area", "Mumbai, Maharashtra 400001, India"],
+      details: ["E 109, Girija Marvel, Friends colony,", "Chanda Nagar, Hyderabad, Pin code 500050"],
     },
     {
       icon: Phone,
@@ -355,7 +355,7 @@ const Contact = () => {
                 <h2 className="text-3xl font-bold text-foreground mb-6">Our Location</h2>
                 <div className="relative w-full h-[400px] rounded-2xl overflow-hidden shadow-xl">
                   <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d241317.11609823277!2d72.74109995709657!3d19.082177799999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c6306644edc1%3A0x5da4ed8f8d648c69!2sMumbai%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1641234567890!5m2!1sen!2sin"
+                    src="https://maps.google.com/maps?q=E+109,+Girija+Marvel,+Friends+colony,+Chanda+Nagar,+Hyderabad,+Pin+code+500050&t=&z=15&ie=UTF8&iwloc=&output=embed"
                     width="100%"
                     height="100%"
                     style={{ border: 0 }}

@@ -55,8 +55,9 @@ const Settings = () => {
                 linkedinUrl: data.linkedinUrl || "",
                 instagramUrl: data.instagramUrl || "",
             });
-        } catch (error) {
-            toast.error("Failed to fetch system settings");
+        } catch (error: any) {
+            console.error("Settings fetch error:", error);
+            toast.error(error.response?.data?.message || "Failed to fetch system settings");
         } finally {
             setLoading(false);
         }
@@ -72,8 +73,9 @@ const Settings = () => {
         try {
             await api.put("/settings", formData);
             toast.success("System configuration updated");
-        } catch (error) {
-            toast.error("Failed to persist changes");
+        } catch (error: any) {
+            console.error("Settings save error:", error);
+            toast.error(error.response?.data?.message || "Failed to persist changes");
         } finally {
             setSaving(false);
         }
