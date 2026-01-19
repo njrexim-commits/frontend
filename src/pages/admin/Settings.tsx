@@ -88,7 +88,11 @@ const Settings = () => {
 
         try {
             setSaving(true);
-            const { data } = await api.post("/upload", uploadFormData);
+            const { data } = await api.post("/upload", uploadFormData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
             setFormData({ ...formData, ogImageUrl: data.url });
             toast.success("Image uploaded successfully");
         } catch (error: any) {
