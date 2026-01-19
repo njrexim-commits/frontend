@@ -27,6 +27,8 @@ const Certificates = () => {
             description: cert.description,
             number: cert.number || cert.certificateNumber,
             validUntil: cert.validUntil || cert.validity,
+            fileUrl: cert.fileUrl,
+            thumbnail: cert.thumbnail || cert.fileUrl // Fallback to fileUrl if thumbnail missing (for images)
           }));
           setCertifications(formattedCerts);
         } else {
@@ -126,6 +128,34 @@ const Certificates = () => {
                   <cert.icon className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-3">{cert.title}</h3>
+
+                {/* Certificate Preview */}
+                <div className="mb-4 rounded-lg overflow-hidden border border-border bg-muted/50 aspect-[4/3] group/image relative">
+                  {cert.thumbnail ? (
+                    <>
+                      <img
+                        src={cert.thumbnail}
+                        alt={cert.title}
+                        className="w-full h-full object-cover object-top transition-transform duration-500 group-hover/image:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover/image:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover/image:opacity-100">
+                        <a
+                          href={cert.fileUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="px-4 py-2 bg-white text-primary rounded-full text-sm font-bold shadow-lg transform translate-y-2 group-hover/image:translate-y-0 transition-all"
+                        >
+                          View Document
+                        </a>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                      <FileCheck className="w-12 h-12 opacity-20" />
+                    </div>
+                  )}
+                </div>
+
                 <p className="text-muted-foreground leading-relaxed mb-4">
                   {cert.description}
                 </p>
