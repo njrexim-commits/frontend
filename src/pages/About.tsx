@@ -201,8 +201,8 @@ const About = () => {
         </div>
       </section>
 
-      {/* Timeline */}
-      <section className="section-padding bg-background">
+      {/* Timeline - Hidden as per request */}
+      {/* <section className="section-padding bg-background">
         <div className="container-custom">
           <div className="text-center mb-12">
             <span className="inline-block text-primary font-semibold uppercase tracking-wider text-sm mb-4">
@@ -216,7 +216,6 @@ const About = () => {
             </p>
           </div>
           <div className="relative">
-            {/* Timeline Line */}
             <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-primary/20" />
 
             <div className="space-y-12">
@@ -237,7 +236,7 @@ const About = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Team & Network */}
       <section className="section-padding bg-secondary text-secondary-foreground">
