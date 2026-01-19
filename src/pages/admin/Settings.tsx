@@ -16,6 +16,7 @@ import {
     Twitter,
     Linkedin,
     Instagram,
+    Image as ImageIcon,
     Settings as SettingsIcon,
     Loader2,
     ShieldCheck,
@@ -43,6 +44,7 @@ const Settings = () => {
         twitterUrl: "",
         linkedinUrl: "",
         instagramUrl: "",
+        ogImageUrl: "",
     });
 
     const fetchSettings = async () => {
@@ -62,6 +64,7 @@ const Settings = () => {
                 twitterUrl: data.twitterUrl || "",
                 linkedinUrl: data.linkedinUrl || "",
                 instagramUrl: data.instagramUrl || "",
+                ogImageUrl: data.ogImageUrl || "",
             });
         } catch (error: any) {
             console.error("Settings fetch error:", error);
@@ -74,6 +77,27 @@ const Settings = () => {
     useEffect(() => {
         fetchSettings();
     }, []);
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const uploadFormData = new FormData();
+        uploadFormData.append("file", file);
+        uploadFormData.append("folder", "settings");
+
+        try {
+            setSaving(true);
+            const { data } = await api.post("/upload", uploadFormData);
+            setFormData({ ...formData, ogImageUrl: data.url });
+            toast.success("Image uploaded successfully");
+        } catch (error: any) {
+            console.error("Upload error:", error);
+            toast.error("Failed to upload image");
+        } finally {
+            setSaving(false);
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -325,6 +349,40 @@ const Settings = () => {
                                     className="border-slate-200 focus:ring-primary/20 h-10 bg-white font-medium text-[13px]"
                                     placeholder="https://instagram.com/acme"
                                 />
+                            </div>
+
+                            <div className="pt-6 border-t border-slate-100 mt-6">
+                                <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 flex items-center gap-2 mb-4">
+                                    <ImageIcon className="w-3 h-3 text-slate-400" /> Default Social Share Image (OG Image)
+                                </Label>
+
+                                <div className="flex items-start gap-4">
+                                    <div className="relative group shrink-0">
+                                        <div className="w-32 h-20 bg-slate-100 rounded-lg border border-slate-200 overflow-hidden flex items-center justify-center">
+                                            {formData.ogImageUrl ? (
+                                                <img
+                                                    src={formData.ogImageUrl}
+                                                    alt="OG Preview"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <ImageIcon className="w-8 h-8 text-slate-300" />
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="flex-1 space-y-2">
+                                        <Input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageUpload}
+                                            disabled={saving}
+                                            className="text-xs file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+                                        />
+                                        <p className="text-[10px] text-slate-400">
+                                            Recommended size: 1200x630px. This image will continue to appear when your links are shared on social media if no specific page image exists.
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="pt-6">

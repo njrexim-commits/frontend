@@ -1,5 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useSettings } from '@/hooks/useSettings';
 
 interface SEOProps {
     title?: string;
@@ -15,14 +16,18 @@ const SEO: React.FC<SEOProps> = ({
     description,
     canonical,
     ogType = 'website',
-    ogImage = 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=1200&q=80',
+    ogImage,
     twitterHandle = '@NJREXIM',
 }) => {
-    const siteName = 'NJR EXIM';
+    const { data: settings } = useSettings();
+    const siteName = settings?.siteName || 'NJR EXIM';
     const fullTitle = title ? `${title} | ${siteName}` : `${siteName} - Premium Agricultural Export Company`;
-    const defaultDescription = 'NJR EXIM is a leading international export company specializing in premium agricultural and food products including rice, spices, fruits, vegetables, and more.';
+    const defaultDescription = settings?.siteDescription || 'NJR EXIM is a leading international export company specializing in premium agricultural and food products.';
     const finalDescription = description || defaultDescription;
-    const siteUrl = 'https://njrexim.com'; // Replace with actual production URL
+    const siteUrl = import.meta.env.VITE_SITE_URL || 'https://njrexim.com';
+
+    // Use provided ogImage first, then settings.ogImageUrl, then fallback
+    const finalOgImage = ogImage || settings?.ogImageUrl || 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=1200&q=80';
 
     return (
         <Helmet>
@@ -35,14 +40,14 @@ const SEO: React.FC<SEOProps> = ({
             <meta property="og:type" content={ogType} />
             <meta property="og:title" content={fullTitle} />
             <meta property="og:description" content={finalDescription} />
-            <meta property="og:image" content={ogImage} />
+            <meta property="og:image" content={finalOgImage} />
             <meta property="og:site_name" content={siteName} />
 
             {/* Twitter */}
             <meta name="twitter:card" content="summary_large_image" />
             <meta name="twitter:title" content={fullTitle} />
             <meta name="twitter:description" content={finalDescription} />
-            <meta name="twitter:image" content={ogImage} />
+            <meta name="twitter:image" content={finalOgImage} />
             {twitterHandle && <meta name="twitter:site" content={twitterHandle} />}
         </Helmet>
     );
