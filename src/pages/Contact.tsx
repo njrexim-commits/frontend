@@ -123,7 +123,7 @@ const Contact = () => {
     {
       icon: Phone,
       title: "Call Us",
-      details: [settings.contactPhone || "+91 123 456 7890" /*, settings.alternatePhone */].filter(Boolean)
+      details: [settings.contactPhone || "+91 123 456 7890", settings.alternatePhone].filter(Boolean)
     },
     {
       icon: Mail,

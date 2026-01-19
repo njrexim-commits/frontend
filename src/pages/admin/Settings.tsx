@@ -45,6 +45,7 @@ const Settings = () => {
         linkedinUrl: "",
         instagramUrl: "",
         ogImageUrl: "",
+        alternatePhone: "",
     });
 
     const fetchSettings = async () => {
@@ -65,6 +66,7 @@ const Settings = () => {
                 linkedinUrl: data.linkedinUrl || "",
                 instagramUrl: data.instagramUrl || "",
                 ogImageUrl: data.ogImageUrl || "",
+                alternatePhone: data.alternatePhone || "",
             });
         } catch (error: any) {
             console.error("Settings fetch error:", error);
@@ -246,6 +248,17 @@ const Settings = () => {
                                         onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
                                         className="border-slate-200 focus:ring-primary/20 h-11 bg-slate-50/50 font-medium"
                                         placeholder="+1 (555) 000-0000"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 flex items-center gap-2">
+                                        <Smartphone className="w-3 h-3 text-slate-400" /> Alternate / Mobile
+                                    </Label>
+                                    <Input
+                                        value={formData.alternatePhone}
+                                        onChange={(e) => setFormData({ ...formData, alternatePhone: e.target.value })}
+                                        className="border-slate-200 focus:ring-primary/20 h-11 bg-slate-50/50 font-medium"
+                                        placeholder="+1 (555) 999-9999"
                                     />
                                 </div>
                                 <div className="space-y-4 md:col-span-2">

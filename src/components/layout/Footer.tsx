@@ -117,31 +117,40 @@ const Footer = () => {
                   <MapPin className="w-5 h-5 text-primary" />
                 </div>
                 <div className="text-white/70 text-sm">
-                  {settings?.address || "123 Export Zone, Industrial Area,"}
-                  <br />
-                  {settings?.city || "Mumbai"}, {settings?.state || "Maharashtra"} {settings?.pincode || "400001"}, {settings?.country || "India"}
+                  {settings?.address} <br />
+                  {settings?.city}, {settings?.state} {settings?.pincode}, {settings?.country}
                 </div>
               </li>
               <li className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
                   <Phone className="w-5 h-5 text-primary" />
                 </div>
-                <a
-                  href={`tel:${settings?.phone || "+911234567890"}`}
-                  className="text-white/70 hover:text-golden transition-colors"
-                >
-                  {settings?.phone || "+91 123 456 7890"}
-                </a>
+                <div className="flex flex-col">
+                  <a
+                    href={`tel:${settings?.contactPhone}`}
+                    className="text-white/70 hover:text-golden transition-colors"
+                  >
+                    {settings?.contactPhone}
+                  </a>
+                  {settings?.alternatePhone && (
+                    <a
+                      href={`tel:${settings?.alternatePhone}`}
+                      className="text-white/70 hover:text-golden transition-colors"
+                    >
+                      {settings?.alternatePhone}
+                    </a>
+                  )}
+                </div>
               </li>
               <li className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
                   <Mail className="w-5 h-5 text-primary" />
                 </div>
                 <a
-                  href={`mailto:${settings?.email || "info@njrexim.com"}`}
+                  href={`mailto:${settings?.contactEmail}`}
                   className="text-white/70 hover:text-golden transition-colors"
                 >
-                  {settings?.email || "info@njrexim.com"}
+                  {settings?.contactEmail}
                 </a>
               </li>
             </ul>
