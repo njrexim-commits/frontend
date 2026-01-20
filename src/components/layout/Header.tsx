@@ -152,8 +152,7 @@ const Header = () => {
 
             {/* Brochure Button */}
             <Button
-              variant="outline"
-              className="border-white/30 text-white hover:bg-white hover:text-secondary rounded-full px-6"
+              className="bg-black text-white hover:bg-black/90 rounded-full px-6 border-none"
             >
               Brochure
             </Button>
@@ -221,8 +220,7 @@ const Header = () => {
               ))}
               <div className="px-4 pt-4 border-t border-white/10">
                 <Button
-                  variant="outline"
-                  className="w-full border-white/30 text-white hover:bg-white hover:text-secondary rounded-full"
+                  className="w-full bg-black text-white hover:bg-black/90 rounded-full border-none"
                 >
                   Brochure
                 </Button>

@@ -41,10 +41,10 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { icon: Facebook, href: settings?.socialMedia?.facebook || "#", label: "Facebook" },
-    { icon: Twitter, href: settings?.socialMedia?.twitter || "#", label: "Twitter" },
-    { icon: Linkedin, href: settings?.socialMedia?.linkedin || "#", label: "LinkedIn" },
-    { icon: Instagram, href: settings?.socialMedia?.instagram || "#", label: "Instagram" },
+    { icon: Facebook, href: settings?.facebookUrl || "#", label: "Facebook" },
+    { icon: Twitter, href: settings?.twitterUrl || "#", label: "Twitter" },
+    { icon: Linkedin, href: settings?.linkedinUrl || "#", label: "LinkedIn" },
+    { icon: Instagram, href: settings?.instagramUrl || "#", label: "Instagram" },
   ];
 
   return (
